@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">HealthXStream</string>
+
+
+
+    <!--sample-Sen-->
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+    </string-array>
+
+
 </resources>
