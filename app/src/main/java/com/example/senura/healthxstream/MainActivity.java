@@ -10,6 +10,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //test
+        //email added delgahadeniya.dissanayake@students.plymouth.ac.uk
     }
 }
