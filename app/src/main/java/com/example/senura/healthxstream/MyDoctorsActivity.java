@@ -54,6 +54,7 @@ public class MyDoctorsActivity extends AppCompatActivity {
         arrayAdapter.notifyDataSetChanged();
 
 
-
     }
+
+
 }
