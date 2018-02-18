@@ -2,7 +2,6 @@
     <string name="app_name">HealthXStream</string>
 
 
-
     <!--sample-Sen-->
     <string-array name="planets_array">
         <item>Mercury</item>
