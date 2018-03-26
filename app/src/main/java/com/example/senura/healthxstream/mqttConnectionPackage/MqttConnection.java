@@ -34,6 +34,7 @@ public class MqttConnection {
         //start
         myContext=passedContext;
 
+        Toast.makeText(myContext, "inside connect", Toast.LENGTH_LONG).show();///////
 
         clientID = unique.generateUUID();
         client = new MqttAndroidClient(myContext.getApplicationContext(), brokerAddress,
@@ -48,8 +49,14 @@ public class MqttConnection {
         SslUtil util1=new SslUtil(myContext.getApplicationContext());
         options.setSocketFactory(util1.getSocketFactory(""));//we only pass the password (empty password)- Sen
 
+        Toast.makeText(myContext, "after options", Toast.LENGTH_LONG).show();///////
+
+
+
         try {
             IMqttToken token = client.connect(options);
+            Toast.makeText(myContext, "after client con"+token, Toast.LENGTH_LONG).show();///////
+
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -69,10 +76,6 @@ public class MqttConnection {
                             public void onSuccess(IMqttToken asyncActionToken) {
                                 // The message was published
 
-                                ////////commented on 18thDec -Sen
-                                //EventHandleCheck.setClientAsConnected();
-                                //EventHandleCheck.setCheckbtnVisible();
-                                ////////commented on 18thDec -Sen
 
                                 Toast.makeText(myContext, "Successfully Connected", Toast.LENGTH_LONG).show();
                             }
@@ -100,12 +103,8 @@ public class MqttConnection {
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
 
-                    Log.d(TAG, "onFailure"+exception.toString()); //this gives an error on android 4.0 -Sen
+                    Log.e(TAG, "onFailure"+exception.toString()); //this gives an error on android 4.0 -Sen
                     Toast.makeText(myContext, "Couldn't connect. Check the internet connection.", Toast.LENGTH_LONG).show();
-
-                    ////////commented on 18thDec -Sen
-                    //myContext.startActivity( new Intent(myContext, MainActivity.class ));//goBack
-                    ////////commented on 18thDec -Sen
 
                     currentAct.finish();
                 }
