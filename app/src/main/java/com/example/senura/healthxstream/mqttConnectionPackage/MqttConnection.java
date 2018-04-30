@@ -25,7 +25,7 @@ public class MqttConnection {
     uniqueIDgenerator unique=new uniqueIDgenerator();
     private Context myContext=null;
     private MqttAndroidClient client=null;
-    private static final String brokerAddress="ssl://a36q3zlv5b6zdr.iot.ap-southeast-1.amazonaws.com:8883";
+    private static final String brokerAddress="ssl://akvgkfwx70brb.iot.us-west-2.amazonaws.com:8883";//a36q3zlv5b6zdr.iot.ap-southeast-1.amazonaws.com:8883";
     private static final String TAG = "MqttConnectionClass";
     private static String clientID=null;
 
@@ -106,7 +106,7 @@ public class MqttConnection {
                     Log.e(TAG, "onFailure"+exception.toString()); //this gives an error on android 4.0 -Sen
                     Toast.makeText(myContext, "Couldn't connect. Check the internet connection.", Toast.LENGTH_LONG).show();
 
-                    currentAct.finish();
+                    //currentAct.finish();
                 }
             });
         } catch (MqttException e) {

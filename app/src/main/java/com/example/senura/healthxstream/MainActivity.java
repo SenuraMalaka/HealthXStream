@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+
 public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
@@ -40,8 +41,10 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
         //email added delgahadeniya.dissanayake@students.plymouth.ac.uk
 
+        //startActivity(new Intent(MainActivity.this, BodyTemperatureActivity.class));
        setButtons();
 
+        connectMqttClient();
 
     }
 
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         String passingPayload = "sample test25";
 
         String passingTopic = "terminal/test25/"+client.getClientId();
+        isPublished=false;
 
         isPublished = mConnection.publishMessage(passingPayload, passingTopic);
 
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     @Override
     protected void onResume() {
         super.onResume();
-        connectMqttClient();
+
     }
 
     private void connectMqttClient() {
