@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -86,7 +87,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
 
-        //BodyTemp
+        //mqtt
         button_sentText = (Button) findViewById(R.id.button_sendText);
 
         button_sentText.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +99,16 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 //arrayAdapter.notifyDataSetChanged();
             }
         });
+
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // When clicked, show a toast with the TextView text or do whatever you need.
+                Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
 
@@ -151,7 +162,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             docIsAvailable(jsonResponse);
         }
 
-        Toast.makeText(MyDoctorsActivity.this, "response : "+jsonResponse, Toast.LENGTH_LONG).show();
+        Toast.makeText(MyDoctorsActivity.this, "response : "+jsonResponse, Toast.LENGTH_SHORT).show();
     }
 
     @Override
