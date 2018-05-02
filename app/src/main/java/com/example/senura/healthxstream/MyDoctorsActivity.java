@@ -136,6 +136,25 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
 
+    //get the doc list
+    public void passDocListReq() {
+
+       String passingPayload = "{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}";
+
+        String passingTopic = "healthxtream/send/";//+client.getClientId();
+        isPublished=false;
+
+        isPublished = mConnection.publishMessage(passingPayload, passingTopic);
+
+        if (isPublished)
+            Toast.makeText(MyDoctorsActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
+
+        Log.d("TagpassedPayload", passingPayload);
+
+    }
+
+
+
     private void connectMqttClient() {
         client = mConnection.connect(MyDoctorsActivity.this, this, "healthxtream/patient/"+clientID, false);
         client.setCallback(MyDoctorsActivity.this);
@@ -157,9 +176,15 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
         String reason=JsonAccess.getJsonInsideObj(jsonResponse,"reason");
 
+
+
+
         if(reason.equals("docIsAvailable")) {
             //sample msg = {"reason":"docIsAvailable", "did":"doctor1"}
             docIsAvailable(jsonResponse);
+        }else if(reason.equals("docListReq")){
+            //sample event = {"reason":"docListReq", "docList":[{"345":"Doctor1 Name"},{"434":"Doctor2 Name"},{"543":"Doctor3 Name"}]}
+            docListReq(jsonResponse);
         }
 
         Toast.makeText(MyDoctorsActivity.this, "response : "+jsonResponse, Toast.LENGTH_SHORT).show();
@@ -172,8 +197,19 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
     private void docIsAvailable(String jsonRes){
-        //Toast.makeText(MyDoctorsActivity.this, "response : "+ JsonAccess.getJsonInsideObj(jsonResponse,"did"), Toast.LENGTH_LONG).show();
-        doctors_list.add(JsonAccess.getJsonInsideObj(jsonResponse,"did"));
+         doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"did"));
         arrayAdapter.notifyDataSetChanged();
+    }
+
+    private void docListReq(String jsonRes){
+         //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"docList"));
+         String jsonArrayDocResult=JsonAccess.getJsonInsideObj(jsonRes,"docList");
+
+        JsonAccess.getJsonInsideObj(jsonRes,"docList");
+        //[{"345":"Doctor1 Name"},{"434":"Doctor2 Name"},{"543":"Doctor3 Name"}]
+
+
+        //Continue from here -Sen
+        //arrayAdapter.notifyDataSetChanged();
     }
 }
