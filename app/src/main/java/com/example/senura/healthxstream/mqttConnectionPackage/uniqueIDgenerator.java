@@ -11,15 +11,35 @@ import java.util.UUID;
 public class uniqueIDgenerator {
 
 
-    String uniqueId = null;
+    static String uniqueId = null;
+    static String uniqueIdForMQTT = null;//for MQTTconClass
 
     //generating UUID
-    public String generateUUID(){
+    public static String getUUID(){
+
+
+        if(uniqueId == null || uniqueId.isEmpty()){
+            //generate random UUIDs
+            uniqueId = UUID.randomUUID().toString();
+        }
+
+        Log.d("uniqueIDGENCLASS","this"+uniqueId);
+
+        return uniqueId;
+    }
+
+
+    //generating UUID
+    public static String generateUUID(){
+
 
         //generate random UUIDs
-        uniqueId = UUID.randomUUID().toString();
-        Log.d("MyTag","this"+uniqueId);
-        return uniqueId;
+        uniqueIdForMQTT = UUID.randomUUID().toString();
+
+
+        Log.d("uniqueIDGENCLASS","this mqtt"+uniqueIdForMQTT);
+
+        return uniqueIdForMQTT;
     }
 
 

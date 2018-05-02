@@ -34,7 +34,7 @@ public class MqttConnection {
         //start
         myContext=passedContext;
 
-        Toast.makeText(myContext, "inside connect", Toast.LENGTH_LONG).show();///////
+        //Toast.makeText(myContext, "inside connect", Toast.LENGTH_LONG).show();///////
 
         clientID = unique.generateUUID();
         client = new MqttAndroidClient(myContext.getApplicationContext(), brokerAddress,
@@ -49,13 +49,13 @@ public class MqttConnection {
         SslUtil util1=new SslUtil(myContext.getApplicationContext());
         options.setSocketFactory(util1.getSocketFactory(""));//we only pass the password (empty password)- Sen
 
-        Toast.makeText(myContext, "after options", Toast.LENGTH_LONG).show();///////
+        //Toast.makeText(myContext, "after options", Toast.LENGTH_LONG).show();///////
 
 
 
         try {
             IMqttToken token = client.connect(options);
-            Toast.makeText(myContext, "after client con"+token, Toast.LENGTH_LONG).show();///////
+            Toast.makeText(myContext, "after client con"+token, Toast.LENGTH_SHORT).show();///////
 
             token.setActionCallback(new IMqttActionListener() {
                 @Override
@@ -77,7 +77,7 @@ public class MqttConnection {
                                 // The message was published
 
 
-                                Toast.makeText(myContext, "Successfully Connected", Toast.LENGTH_LONG).show();
+                                Toast.makeText(myContext, "Successfully Connected", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

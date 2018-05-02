@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         //startActivity(new Intent(MainActivity.this, BodyTemperatureActivity.class));
        setButtons();
 
-        connectMqttClient();
+        //connectMqttClient();
 
     }
 
