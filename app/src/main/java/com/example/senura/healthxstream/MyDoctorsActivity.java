@@ -20,6 +20,7 @@ import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,8 +73,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         //arrayAdapter.notifyDataSetChanged();
 
 
-        connectMqttClient();
-        setButtons();
+        docListReq("{\"reason\":\"docListReq\", \"docList\":[{\"345\":\"Doctor1 Name\"},{\"434\":\"Doctor2 Name\"},{\"543\":\"Doctor3 Name\"}]}");
+        //connectMqttClient();
+        //setButtons();
 
 
     }
@@ -205,11 +207,29 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
          //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"docList"));
          String jsonArrayDocResult=JsonAccess.getJsonInsideObj(jsonRes,"docList");
 
-        JsonAccess.getJsonInsideObj(jsonRes,"docList");
+        String docLst=JsonAccess.getJsonInsideObj(jsonRes,"docList");
         //[{"345":"Doctor1 Name"},{"434":"Doctor2 Name"},{"543":"Doctor3 Name"}]
 
 
+        int resCount=0;
+        JSONArray jArray = null;
+        try {
+            jArray = new JSONArray(docLst);
+            resCount=jArray.length();
+        }
+            catch (Exception ex){}
+
+
+        for(int i=0;i<resCount;i++){
+        String res=JsonAccess.getJsonInsideArray(docLst,i);
+            doctors_list.add(res);
+        }
+
+
+        //Toast.makeText(MyDoctorsActivity.this, "array index 2 is : "+res, Toast.LENGTH_LONG).show();
+
+
         //Continue from here -Sen
-        //arrayAdapter.notifyDataSetChanged();
+        arrayAdapter.notifyDataSetChanged();
     }
 }
