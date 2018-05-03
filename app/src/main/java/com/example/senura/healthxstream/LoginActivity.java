@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         isNetConWorking();
-        
 
     }
 
@@ -48,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         if(!isConnectionWorking) {
             Toast.makeText(LoginActivity.this,"No Internet Connection", Toast.LENGTH_SHORT).show();
-
         }
 
         return isConnectionWorking;
