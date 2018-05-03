@@ -55,7 +55,7 @@ public class MqttConnection {
 
         try {
             IMqttToken token = client.connect(options);
-            Toast.makeText(myContext, "after client con"+token, Toast.LENGTH_SHORT).show();///////
+            //Toast.makeText(myContext, "after client con"+token, Toast.LENGTH_SHORT).show();///////
 
             token.setActionCallback(new IMqttActionListener() {
                 @Override
@@ -63,6 +63,7 @@ public class MqttConnection {
                     // We are connected
 
                     String topic = passedTopic;
+                    Log.d("MQTT con class","subscribed to"+passedTopic);
                     if (needClientID)
                     { topic = passedTopic+clientID;}//add clientId if it needs to be added to the topic
 

@@ -14,6 +14,7 @@ import com.example.senura.healthxstream.BodyTemperatureActivity;
 import com.example.senura.healthxstream.MainActivity;
 import com.example.senura.healthxstream.MyDoctorsActivity;
 import com.example.senura.healthxstream.R;
+import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
 
@@ -62,8 +63,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         button_Search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //sendPayload
+                connectMqttClient();//subscribe to topic
                 hideSearchTextArea();
             }
         });
@@ -102,6 +102,18 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+        this.jsonResponse = message.toString();
+
+        Log.d("TagMessageArrived", jsonResponse);
+
+        String reason= JsonAccess.getJsonInsideObj(jsonResponse,"reason");
+
+        if(reason.equals("isDocAvailable")) {
+            //sample msg = {"reason":"docIsAvailable", "did":"doctor1"}
+            isDocAvailable(jsonResponse);
+        }
+
+        Toast.makeText(DoctorWaitingAreaActivity.this,"Message arrived: "+jsonResponse, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -109,6 +121,17 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
+
+
+    private void isDocAvailable(String res){
+        String pid=JsonAccess.getJsonInsideObj(res,"pid");
+        String payloadToBeSend="{\"reason\":\"docIsAvailable\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\"}";
+        //sample: {"reason":"isDocAvailable", "pid":"fa18a0ec-974d-4d26-ba26-bcb67a84c0ee"}
+       passPayload(payloadToBeSend);
+    }
+
+
+
 
 
 
