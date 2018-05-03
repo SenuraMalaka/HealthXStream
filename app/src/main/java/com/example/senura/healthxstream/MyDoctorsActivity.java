@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
@@ -95,9 +96,18 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         button_sentText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 availableDidList = new ArrayList<String>();//should only run once
                 passDocListReq();
                 passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}");
+
+
+                //hide the text
+                TextView textView_checkToSeeDocs = (TextView) findViewById(R.id.textView_checkToSeeTheDocs);
+                textView_checkToSeeDocs.setVisibility(View.GONE);
+
+
             }
         });
 
@@ -150,7 +160,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     }
 
 
-    public void passPayload(String payload) {
+    public boolean passPayload(String payload) {
 
         String android_serial = android.os.Build.SERIAL;
 
@@ -170,6 +180,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
         Log.d("TagpassedPayload", passingPayload);
 
+        return isPublished;
     }
 
 

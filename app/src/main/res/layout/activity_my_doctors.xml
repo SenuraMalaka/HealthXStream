@@ -49,6 +49,13 @@
                 app:srcCompat="@mipmap/doctor_logo" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView_checkToSeeTheDocs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="check to get a lsit of doctors"
+            android:textAlignment="center" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
