@@ -45,6 +45,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     String docLst=null;
 
 
+    //listView vars
     private ListView lv=null;
     private List<String> doctors_list=null;
     private  ArrayAdapter<String> arrayAdapter=null;
@@ -100,7 +101,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
                 availableDidList = new ArrayList<String>();//should only run once
                 passDocListReq();
-                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}");
+
+                //a loop with did should go here //pName should assign somehow
+                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}, \"pName\":\"Sen Ma\"}");
 
 
                 //hide the text

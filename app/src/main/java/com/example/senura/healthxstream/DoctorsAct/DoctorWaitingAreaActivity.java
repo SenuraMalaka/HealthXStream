@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.BodyTemperatureActivity;
@@ -25,7 +27,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class DoctorWaitingAreaActivity extends AppCompatActivity implements MqttCallback {
 
@@ -37,6 +42,11 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     public String jsonResponse = null;
     String doctorID=null;
 
+    //ListView Vars
+    private ListView lv=null;
+    private List<String> patients_list=null;
+    private ArrayAdapter<String> arrayAdapter=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,25 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
         doctorID="345";//should get the docID from the login
         setButtons();
+
+        // Get reference of widgets from XML layout
+        lv = (ListView) findViewById(R.id.ListView_MyPatients);
+
+        // Initializing a new String Array
+        String[] doctorsArray = new String[]{};
+
+        // Create a List from String Array elements
+        patients_list = new ArrayList<String>(Arrays.asList(doctorsArray));
+
+        // Create an ArrayAdapter from List
+        arrayAdapter= new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, patients_list);
+
+        // DataBind ListView with items from ArrayAdapter
+        lv.setAdapter(arrayAdapter);
+
+
+
 
     }
 
@@ -124,10 +153,19 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
 
     private void isDocAvailable(String res){
+
+        String pName=JsonAccess.getJsonInsideObj(res,"pName");
+        addToPatientList(pName);
+
         String pid=JsonAccess.getJsonInsideObj(res,"pid");
         String payloadToBeSend="{\"reason\":\"docIsAvailable\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\"}";
         //sample: {"reason":"isDocAvailable", "pid":"fa18a0ec-974d-4d26-ba26-bcb67a84c0ee"}
        passPayload(payloadToBeSend);
+    }
+
+
+    private void addToPatientList(String pName){
+        arrayAdapter.add(pName);
     }
 
 
