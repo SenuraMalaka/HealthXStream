@@ -41,11 +41,14 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     public String SourceID;
     public String jsonResponse = null;
     String clientID=uniqueIDgenerator.getUUID();
+    String docLst=null;
 
 
     private ListView lv=null;
     private List<String> doctors_list=null;
     private  ArrayAdapter<String> arrayAdapter=null;
+
+    ArrayList<String> availableDidList=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +80,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
         docListReq("{\"reason\":\"docListReq\", \"docList\":[{\"345\":\"Doctor1 Name\"},{\"434\":\"Doctor2 Name\"},{\"543\":\"Doctor3 Name\"}]}");
-        //connectMqttClient();
-        //setButtons();
+        connectMqttClient();
+        setButtons();
 
 
     }
@@ -99,8 +102,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(MyDoctorsActivity.this, BodyTemperatureActivity.class));
-                passPayload();
-                arrayAdapter.clear();
+                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}");
+                //arrayAdapter.clear();
                 //arrayAdapter.notifyDataSetChanged();
             }
         });
@@ -117,7 +120,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     }
 
 
-    public void passPayload() {
+    public void passPayload(String payload) {
+
+        availableDidList = new ArrayList<String>();//should only run once
 
         String android_serial = android.os.Build.SERIAL;
 
@@ -125,7 +130,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         String dateAndTime = df.format(Calendar.getInstance().getTime());
 
 
-        String passingPayload = "{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}";
+        String passingPayload = payload;
 
         String passingTopic = "healthxtream/send/";//+client.getClientId();
         isPublished=false;
@@ -143,6 +148,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     //get the doc list
     public void passDocListReq() {
+
+
+
 
        String passingPayload = "{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}";
 
@@ -163,6 +171,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     private void connectMqttClient() {
         client = mConnection.connect(MyDoctorsActivity.this, this, "healthxtream/patient/"+clientID, false);
         client.setCallback(MyDoctorsActivity.this);
+        Toast.makeText(MyDoctorsActivity.this,"clientID > "+clientID, Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -202,15 +212,81 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
     private void docIsAvailable(String jsonRes){
-         doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"did"));
+
+
+
+        String did =JsonAccess.getJsonInsideObj(jsonRes,"did");
+
+        int resCount=0;
+        JSONArray jArray = null;
+        try {
+            jArray = new JSONArray(docLst);
+            resCount=jArray.length();
+            doctors_list.clear();
+        }catch (Exception ex){}
+
+
+
+        for(int i=0;i<resCount;i++) {
+
+                JSONObject json_array = jArray.optJSONObject(i);
+
+                Iterator<?> keys = json_array.keys();
+
+                while (keys.hasNext()) {
+                    String val = "";
+                    String key = (String) keys.next();
+                    System.out.println("Key: " + key);
+                    try {
+                        val = (String) json_array.get(key);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    if(isDidArrayHas(key)){
+                        val+=" AVAILABLE";
+                    }
+                    else if(key.equals(did)) {
+                        val+=" AVAILABLE";
+                    availableDidList.add(key);
+                    }
+
+                    doctors_list.add(key + " -- " + val);
+
+                }
+
+        }
+        Toast.makeText(MyDoctorsActivity.this, " didi list: "+availableDidList.toString(), Toast.LENGTH_LONG).show();
+
+
+
+        //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"did"));
+
+
         arrayAdapter.notifyDataSetChanged();
+    }
+
+
+    private boolean isDidArrayHas(String key){
+
+        boolean state=false;
+        for(int i=0;i<availableDidList.size();i++){
+
+            if(key.equals(availableDidList.get(i))){
+                state=true;
+            }
+        }
+
+         return state;
     }
 
     private void docListReq(String jsonRes){
          //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"docList"));
          String jsonArrayDocResult=JsonAccess.getJsonInsideObj(jsonRes,"docList");
 
-        String docLst=JsonAccess.getJsonInsideObj(jsonRes,"docList");
+        docLst=JsonAccess.getJsonInsideObj(jsonRes,"docList");
         //[{"345":"Doctor1 Name"},{"434":"Doctor2 Name"},{"543":"Doctor3 Name"}]
 
 
@@ -244,19 +320,6 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 }
             }
         }
-
-//        try {
-//            jArray = new JSONArray(docLst);
-//            resCount=jArray.length();
-//        }
-//            catch (Exception ex){}
-//
-//
-//        for(int i=0;i<resCount;i++){
-//        String res=JsonAccess.getJsonInsideArray(docLst,i);
-//            doctors_list.add(res);
-//        }
-
 
         //Toast.makeText(MyDoctorsActivity.this, "array index 2 is : "+res, Toast.LENGTH_LONG).show();
 
