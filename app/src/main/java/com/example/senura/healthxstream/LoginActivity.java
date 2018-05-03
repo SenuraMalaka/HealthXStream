@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -23,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
         button_lg_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(LoginActivity.this, DoctorWaitingAreaActivity.class));
                 finish();
             }
         });

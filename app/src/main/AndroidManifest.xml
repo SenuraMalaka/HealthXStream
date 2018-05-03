@@ -34,7 +34,8 @@
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
-        <activity android:name=".DoctorContactActivity"></activity>
+        <activity android:name=".DoctorContactActivity" />
+        <activity android:name=".DoctorsAct.DoctorWaitingAreaActivity"></activity>
     </application>
 
 </manifest>
