@@ -49,6 +49,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     private  ArrayAdapter<String> arrayAdapter=null;
 
     ArrayList<String> availableDidList=null;
+    JSONArray docListjArray = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +104,47 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String didJson="";
+                try {
+                    didJson=docListjArray.getString(position);
+                    didJson="["+didJson+"]";
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONArray didJsonArray=null;
+                try {
+                    didJsonArray = new JSONArray(didJson);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                JSONObject json_array = didJsonArray.optJSONObject(0);
+
+                Iterator<?> keys = json_array.keys();
+
+                String did="";
+                String docName="";
+                while( keys.hasNext() ) {
+                    did=(String) keys.next();
+                    try {
+                        docName= (String) json_array.get(did);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 // When clicked, show a toast with the TextView text or do whatever you need.
-                Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position)+" did ="+did+" DocName="+docName, Toast.LENGTH_SHORT).show();
+
+                //go to another act
+                Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
+                myIntent.putExtra("did", did); //Optional parameters
+                myIntent.putExtra("docName", docName); //Optional parameters
+                MyDoctorsActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }
@@ -144,9 +184,6 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     private void connectMqttClient() {
         client = mConnection.connect(MyDoctorsActivity.this, this, "healthxtream/patient/"+clientID, false);
         client.setCallback(MyDoctorsActivity.this);
-        Toast.makeText(MyDoctorsActivity.this,"clientID > "+clientID, Toast.LENGTH_SHORT).show();
-
-
     }
 
 
@@ -176,7 +213,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             docListReq(jsonResponse);
         }
 
-        Toast.makeText(MyDoctorsActivity.this, "response : "+jsonResponse, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MyDoctorsActivity.this, "response : "+jsonResponse, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -232,12 +269,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 }
 
         }
-        Toast.makeText(MyDoctorsActivity.this, " didi list: "+availableDidList.toString(), Toast.LENGTH_LONG).show();
-
-
 
         //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"did"));
-
 
         arrayAdapter.notifyDataSetChanged();
     }
@@ -265,17 +298,20 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
         int resCount=0;
-        JSONArray jArray = null;
+
         try {
-            jArray = new JSONArray(docLst);
-            resCount=jArray.length();
+            docListjArray = new JSONArray(docLst);
+            resCount=docListjArray.length();
         }catch (Exception ex){}
+
+
 
 
 
         for(int i=0;i<resCount;i++) {
             {
-                JSONObject json_array = jArray.optJSONObject(i);
+                JSONObject json_array = docListjArray.optJSONObject(i);
+
 
                 Iterator<?> keys = json_array.keys();
 

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.senura.healthxstream">
 
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,6 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-feature android:name="android.hardware.usb.host" />
 
     <application
@@ -30,10 +30,11 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".FamilyMembersActivity" />
         <activity android:name=".HeartBeatActivity" />
-        <activity android:name=".BodyTemperatureActivity"></activity>
+        <activity android:name=".BodyTemperatureActivity" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
+        <activity android:name=".DoctorContactActivity"></activity>
     </application>
 
 </manifest>
