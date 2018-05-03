@@ -74,12 +74,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         Intent intent = getIntent();
         String value = intent.getStringExtra("key");
 
-        //fruits_list.add(value);
 
-        //arrayAdapter.notifyDataSetChanged();
-
-
-        docListReq("{\"reason\":\"docListReq\", \"docList\":[{\"345\":\"Doctor1 Name\"},{\"434\":\"Doctor2 Name\"},{\"543\":\"Doctor3 Name\"}]}");
         connectMqttClient();
         setButtons();
 
@@ -93,18 +88,15 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     private void setButtons(){
         Button button_sentText;
 
-
-
         //mqtt
         button_sentText = (Button) findViewById(R.id.button_sendText);
 
         button_sentText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(MyDoctorsActivity.this, BodyTemperatureActivity.class));
+                availableDidList = new ArrayList<String>();//should only run once
+                passDocListReq();
                 passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}");
-                //arrayAdapter.clear();
-                //arrayAdapter.notifyDataSetChanged();
             }
         });
 
@@ -115,14 +107,10 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
 
     public void passPayload(String payload) {
-
-        availableDidList = new ArrayList<String>();//should only run once
 
         String android_serial = android.os.Build.SERIAL;
 
@@ -148,22 +136,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     //get the doc list
     public void passDocListReq() {
-
-
-
-
-       String passingPayload = "{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}";
-
-        String passingTopic = "healthxtream/send/";//+client.getClientId();
-        isPublished=false;
-
-        isPublished = mConnection.publishMessage(passingPayload, passingTopic);
-
-        if (isPublished)
-            Toast.makeText(MyDoctorsActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
-
-        Log.d("TagpassedPayload", passingPayload);
-
+        passPayload("{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}");
     }
 
 
@@ -172,6 +145,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         client = mConnection.connect(MyDoctorsActivity.this, this, "healthxtream/patient/"+clientID, false);
         client.setCallback(MyDoctorsActivity.this);
         Toast.makeText(MyDoctorsActivity.this,"clientID > "+clientID, Toast.LENGTH_SHORT).show();
+
 
     }
 
