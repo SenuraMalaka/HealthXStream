@@ -1,6 +1,8 @@
 package com.example.senura.healthxstream.DoctorsAct;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +49,11 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     private List<String> patients_list=null;
     private ArrayAdapter<String> arrayAdapter=null;
 
+    //Alert
+    private boolean isDisplayingAnAlert=false;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         lv.setAdapter(arrayAdapter);
 
 
+        //showAlert("sen");
 
 
     }
@@ -137,10 +145,15 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
         String reason= JsonAccess.getJsonInsideObj(jsonResponse,"reason");
 
-        if(reason.equals("isDocAvailable")) {
-            //sample msg = {"reason":"docIsAvailable", "did":"doctor1"}
-            isDocAvailable(jsonResponse);
-        }
+        if(!isDisplayingAnAlert) {
+            if (reason.equals("isDocAvailable")) {
+                //sample msg = {"reason":"docIsAvailable", "did":"doctor1"}
+                isDocAvailable_res(jsonResponse);
+            } else if (reason.equals("bookDocNow")) {
+                //sample msg = {"reason":"bookDocNow", "pid":"patient123", "pName":"patient1"}
+                bookDocNow_res(jsonResponse);
+            }
+        }//if (isDisplayingAnAlert) - end
 
         Toast.makeText(DoctorWaitingAreaActivity.this,"Message arrived: "+jsonResponse, Toast.LENGTH_SHORT).show();
 
@@ -152,7 +165,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     }
 
 
-    private void isDocAvailable(String res){
+    private void isDocAvailable_res(String res){
 
         String pName=JsonAccess.getJsonInsideObj(res,"pName");
         addToPatientList(pName);
@@ -166,6 +179,54 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     private void addToPatientList(String pName){
         arrayAdapter.add(pName);
+    }
+
+
+    private void bookDocNow_res(String res){
+        //{"reason":"bookDocNow", "pid":"patient123", "did":"doctor123", "pName":"patient1"}
+
+        String pName=JsonAccess.getJsonInsideObj(res,"pName");
+        String pid=JsonAccess.getJsonInsideObj(res,"pid");
+        showAppointmentAlert(pName,pid);
+    }
+
+
+
+
+
+    private void showAppointmentAlert(String pName, String pid){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                DoctorWaitingAreaActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle("Appointment");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Patient named \""+pName+"\" has made an appointment with you right now.\n Would you like to accept?")
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        isDisplayingAnAlert=false;
+                        Toast.makeText(DoctorWaitingAreaActivity.this, "OK button click ", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isDisplayingAnAlert=false;
+                        Toast.makeText(DoctorWaitingAreaActivity.this, "CANCEL button click ", Toast.LENGTH_SHORT).show();
+
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        isDisplayingAnAlert=true;
+        alertDialog.show();
     }
 
 
