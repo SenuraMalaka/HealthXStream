@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
@@ -19,13 +20,24 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-        Button button_lg_Login;
+        final Button button_lg_Login;
         button_lg_Login = (Button) findViewById(R.id.button_LG_Login);
+
+        final EditText etEmail;
+        etEmail = (EditText) findViewById(R.id.editText_LG_EM);
+        EditText etPW;
+        etPW = (EditText) findViewById(R.id.editText_LG_PW);
 
         button_lg_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, DoctorWaitingAreaActivity.class));
+
+                if(etEmail.getText().equals("doc")){
+                    startActivity(new Intent(LoginActivity.this, DoctorWaitingAreaActivity.class));
+
+                }else {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
                 finish();
             }
         });
