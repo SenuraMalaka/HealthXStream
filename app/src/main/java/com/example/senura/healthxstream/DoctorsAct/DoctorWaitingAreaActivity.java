@@ -194,7 +194,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
 
 
-    private void showAppointmentAlert(String pName, String pid){
+    private void showAppointmentAlert(String pName, final String pid){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 DoctorWaitingAreaActivity.this);
 
@@ -208,13 +208,14 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                 .setPositiveButton("OK",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         isDisplayingAnAlert=false;
-                        Toast.makeText(DoctorWaitingAreaActivity.this, "OK button click ", Toast.LENGTH_SHORT).show();
-
+                        sendTheConfirmationStatus(pid, true);
+                        Toast.makeText(DoctorWaitingAreaActivity.this, "OK button click", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         isDisplayingAnAlert=false;
+                        sendTheConfirmationStatus(pid, false);
                         Toast.makeText(DoctorWaitingAreaActivity.this, "CANCEL button click ", Toast.LENGTH_SHORT).show();
 
                         dialog.cancel();
@@ -227,6 +228,11 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         // show it
         isDisplayingAnAlert=true;
         alertDialog.show();
+    }
+
+
+    private void sendTheConfirmationStatus(String pid,boolean state){
+        passPayload("{\"reason\":\"bookDocConfirmed\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\", \"state\":"+state+"}");
     }
 
 
