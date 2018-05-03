@@ -21,12 +21,15 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback {
@@ -216,14 +219,43 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         try {
             jArray = new JSONArray(docLst);
             resCount=jArray.length();
-        }
-            catch (Exception ex){}
+        }catch (Exception ex){}
 
 
-        for(int i=0;i<resCount;i++){
-        String res=JsonAccess.getJsonInsideArray(docLst,i);
-            doctors_list.add(res);
+
+        for(int i=0;i<resCount;i++) {
+            {
+                JSONObject json_array = jArray.optJSONObject(i);
+
+                Iterator<?> keys = json_array.keys();
+
+                while (keys.hasNext()) {
+                    String val = "";
+                    String key = (String) keys.next();
+                    System.out.println("Key: " + key);
+                    try {
+                        val = (String) json_array.get(key);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    doctors_list.add(key + " -- " + val);
+
+                }
+            }
         }
+
+//        try {
+//            jArray = new JSONArray(docLst);
+//            resCount=jArray.length();
+//        }
+//            catch (Exception ex){}
+//
+//
+//        for(int i=0;i<resCount;i++){
+//        String res=JsonAccess.getJsonInsideArray(docLst,i);
+//            doctors_list.add(res);
+//        }
 
 
         //Toast.makeText(MyDoctorsActivity.this, "array index 2 is : "+res, Toast.LENGTH_LONG).show();
