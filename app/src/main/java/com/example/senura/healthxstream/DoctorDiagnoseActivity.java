@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -18,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class DoctorContactActivity extends AppCompatActivity implements MqttCallback{
+public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCallback {
 
     public static MqttAndroidClient clientTemp = null;
     private MqttAndroidClient client = null;
@@ -27,28 +26,34 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
     private String did=null;
     private String docName=null;
 
-    public String jsonResponse = null;
+    private String jsonResponse = null;
+    private boolean isFirstTimeMessageBoxUpdates=false;
+
+    //View
+    TextView textView_MessageBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doctor_contact);
-
-
+        setContentView(R.layout.activity_doctor_diagnose);
 
         Intent intent = getIntent();
         did = intent.getStringExtra("did");
         docName = intent.getStringExtra("docName");
         clientID = intent.getStringExtra("clientID");
+        Toast.makeText(DoctorDiagnoseActivity.this,"did is ="+did+" \ndocName ="+docName, Toast.LENGTH_SHORT).show();
 
         client=clientTemp;
+        setResources();
+
         setClientListenToThisAct();
     }
 
 
     private void setClientListenToThisAct(){
-        client.setCallback(DoctorContactActivity.this);
+        client.setCallback(DoctorDiagnoseActivity.this);
     }
+
 
 
     @Override
@@ -65,12 +70,13 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         String reason= JsonAccess.getJsonInsideObj(jsonResponse,"reason");
 
 
-        //Toast.makeText(DoctorContactActivity.this,"arrived -> "+message.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(DoctorDiagnoseActivity.this,"arrived -> "+message.toString(), Toast.LENGTH_SHORT).show();
 
-        if (reason.equals("bookDocConfirmStatus")) {
-            //sample msg = {"reason":"bookDocConfirmStatus", "pid":"patient123", "did":"doctor123", "state":true}
-            docIsAvailable_resHandler(jsonResponse);
+        if (reason.equals("docMsg")) {
+            //sample msg = {"reason":"docMsg", "pid":"patient123", "did":"doctor123", "sensorType":"temp", "msg":"Please scan the temp"}
+           docMsg_resHandler(jsonResponse);
         }
+
 
     }
 
@@ -80,41 +86,55 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
     }
 
 
+    private void docMsg_resHandler(String res){
+        //{"reason":"docMsg", "pid":"patient123", "did":"doctor123", "sensorType":"temp", "msg":"Please scan the temp"}
 
-    private void docIsAvailable_resHandler(String res){
-        boolean state= Boolean.valueOf(JsonAccess.getJsonInsideObj(res,"state"));
         String _did=JsonAccess.getJsonInsideObj(res,"did");
+        String _sensorType=JsonAccess.getJsonInsideObj(res,"sensorType");
+        String _msg=JsonAccess.getJsonInsideObj(res,"msg");
 
-        if(_did.equals(did)){
+        Toast.makeText(DoctorDiagnoseActivity.this,"did is- "+did+" _did -"+_did, Toast.LENGTH_SHORT).show();
 
-            if(state){
-                //confirmed
-                Toast.makeText(DoctorContactActivity.this,"Doctor will join...", Toast.LENGTH_SHORT).show();
-                goToDoctorDiagnoseAct(docName, did);//go to diagnose act
+
+        if(did.equals(_did)){
+
+            if(!_sensorType.equals("null")){
+                //no sensor involved
+
+                Toast.makeText(DoctorDiagnoseActivity.this,"Inside 1st if", Toast.LENGTH_SHORT).show();
+
+                if(!isFirstTimeMessageBoxUpdates){
+                    isFirstTimeMessageBoxUpdates=true;
+                    textView_MessageBox.setText("");//only runs once
+                    Toast.makeText(DoctorDiagnoseActivity.this,"Inside 2nd if", Toast.LENGTH_SHORT).show();
+
+                }
+                addTextToMsgBox("Doctor -> "+_msg);
+
+            }
+
+
+            if(_sensorType.equals("temp")){
+
+            }else if(_sensorType.equals("pulse")){
 
             }else{
-                //Doctor cancelled the booking
-                disconnectClient();
-                Toast.makeText(DoctorContactActivity.this,"Doctor Rejected the Appointment", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(DoctorContactActivity.this, MainActivity.class));
-                finish();
+                //payload format is wrong //could be null
             }
+
         }
+
     }
 
 
-
-    private void goToDoctorDiagnoseAct(String docName, String did){
-        //go to another act
-        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
-        myIntent.putExtra("did", did); //Optional parameters
-        myIntent.putExtra("docName", docName); //Optional parameters
-        myIntent.putExtra("clientID", clientID); //Optional parameters
-        DoctorDiagnoseActivity.clientTemp=client;//setMqttclient
-        DoctorContactActivity.this.startActivity(myIntent);
-        finish();
+    private void setResources(){
+        textView_MessageBox = (TextView) findViewById(R.id.textView_DD_Messages);
     }
 
+
+    private void addTextToMsgBox(String text){
+        textView_MessageBox.setText(textView_MessageBox.getText().toString()+"\n-----\n"+text);
+    }
 
 
 
@@ -127,20 +147,21 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         // we are now successfully disconnected
-                        Log.d("DocCA", "Client Successfully Disconnected");
+                        Log.d("DocD", "Client Successfully Disconnected");
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken,
                                           Throwable exception) {
                         // something went wrong, but probably we are disconnected anyway
-                        Log.w("DocCA", "Client is not properly disconnected");
+                        Log.w("DocD", "Client is not properly disconnected");
                     }
                 });
             } catch (MqttException e) {
-                Log.e("DocCA", "Client Disconnect -error " + e.toString());
+                Log.e("DocD", "Client Disconnect -error " + e.toString());
             }
         }
     }
+
 
 }
