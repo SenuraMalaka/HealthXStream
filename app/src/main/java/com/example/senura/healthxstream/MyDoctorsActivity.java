@@ -415,6 +415,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         myIntent.putExtra("docName", docName); //Optional parameters
         myIntent.putExtra("clientID", clientID); //Optional parameters
         DoctorContactActivity.clientTemp=client;//setMqttclient
+        DoctorContactActivity.mConnectionTemp=mConnection;//setMqttConnection
         MyDoctorsActivity.this.startActivity(myIntent);
         finish();
     }

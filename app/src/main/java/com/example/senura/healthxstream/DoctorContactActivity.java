@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
+import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -20,6 +21,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class DoctorContactActivity extends AppCompatActivity implements MqttCallback{
 
+    public static MqttConnection mConnectionTemp=null;
+    private MqttConnection mConnection=null;
     public static MqttAndroidClient clientTemp = null;
     private MqttAndroidClient client = null;
 
@@ -41,6 +44,7 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         docName = intent.getStringExtra("docName");
         clientID = intent.getStringExtra("clientID");
 
+        mConnection=mConnectionTemp;
         client=clientTemp;
         setClientListenToThisAct();
     }
@@ -111,6 +115,7 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         myIntent.putExtra("docName", docName); //Optional parameters
         myIntent.putExtra("clientID", clientID); //Optional parameters
         DoctorDiagnoseActivity.clientTemp=client;//setMqttclient
+        DoctorDiagnoseActivity.mConnectionTemp=mConnection;//setMqttConnection
         DoctorContactActivity.this.startActivity(myIntent);
         finish();
     }
