@@ -120,6 +120,18 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         finish();
     }
 
+    private void goToIllnessAwarenessAct(String docName, String did){
+        //go to another act
+        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
+        myIntent.putExtra("did", did); //Optional parameters
+        myIntent.putExtra("docName", docName); //Optional parameters
+        myIntent.putExtra("clientID", clientID); //Optional parameters
+        DoctorIllnessAwarenessActivity.clientTemp=client;//setMqttclient
+        DoctorIllnessAwarenessActivity.mConnectionTemp=mConnection;//setMqttConnection
+        DoctorContactActivity.this.startActivity(myIntent);
+        finish();
+    }
+
 
 
 
