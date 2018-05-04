@@ -21,8 +21,11 @@ import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -379,6 +382,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                         //isDisplayingAnAlert=false;
                         Toast.makeText(MyDoctorsActivity.this, "Sending the booking request", Toast.LENGTH_SHORT).show();
                         passBookDocNow(did);
+
                         goToDoctorContactAct(docName,did);
                     }
                 })
@@ -409,8 +413,38 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
         myIntent.putExtra("did", did); //Optional parameters
         myIntent.putExtra("docName", docName); //Optional parameters
+        myIntent.putExtra("clientID", clientID); //Optional parameters
+        DoctorContactActivity.clientTemp=client;//setMqttclient
         MyDoctorsActivity.this.startActivity(myIntent);
         finish();
+    }
+
+
+
+
+    private void disconnectClient()
+    {
+        if(client!=null) {
+            try {
+                IMqttToken disconToken = client.disconnect();
+                disconToken.setActionCallback(new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        // we are now successfully disconnected
+                        Log.d("MyDocA", "Client Successfully Disconnected");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken,
+                                          Throwable exception) {
+                        // something went wrong, but probably we are disconnected anyway
+                        Log.w("MyDocA", "Client is not properly disconnected");
+                    }
+                });
+            } catch (MqttException e) {
+                Log.e("MyDocA", "Client Disconnect -error " + e.toString());
+            }
+        }
     }
 
 

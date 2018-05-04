@@ -247,9 +247,11 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                     public void onClick(DialogInterface dialog, int id) {
                         isDisplayingAnAlert=false;
                         sendTheConfirmationStatus(pid, false);
-                        Toast.makeText(DoctorWaitingAreaActivity.this, "CANCEL button click ", Toast.LENGTH_SHORT).show();
 
                         dialog.cancel();
+                        //reload the page
+                        startActivity(new Intent(DoctorWaitingAreaActivity.this, DoctorWaitingAreaActivity.class));
+                        finish();
                     }
                 });
 
