@@ -1,6 +1,8 @@
 package com.example.senura.healthxstream;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
@@ -52,6 +55,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     ArrayList<String> availableDidList=null;
     JSONArray docListjArray = null;
+
+    private String patientName="Sen Ma";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,11 +160,14 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 //Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position)+" did ="+did+" DocName="+docName, Toast.LENGTH_SHORT).show();
 
                 //go to another act
-                Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
-                myIntent.putExtra("did", did); //Optional parameters
-                myIntent.putExtra("docName", docName); //Optional parameters
-                MyDoctorsActivity.this.startActivity(myIntent);
-                finish();
+                //Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
+                //myIntent.putExtra("did", did); //Optional parameters
+                //myIntent.putExtra("docName", docName); //Optional parameters
+                //MyDoctorsActivity.this.startActivity(myIntent);
+                //finish();
+
+                showBookDoctorAlert(docName,did);
+
             }
         });
     }
@@ -353,4 +361,57 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         //Continue from here -Sen
         arrayAdapter.notifyDataSetChanged();
     }
+
+
+    private void showBookDoctorAlert(final String docName, final String did){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                MyDoctorsActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle("Book a Doctor");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Do you want to book Dr. "+docName+"?")
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        //isDisplayingAnAlert=false;
+                        Toast.makeText(MyDoctorsActivity.this, "Sending the booking request", Toast.LENGTH_SHORT).show();
+                        passBookDocNow(did);
+                        goToDoctorContactAct(docName,did);
+                    }
+                })
+                .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //isDisplayingAnAlert=false;
+                        Toast.makeText(MyDoctorsActivity.this, "Canceled the booking", Toast.LENGTH_SHORT).show();
+
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        //isDisplayingAnAlert=true;
+        alertDialog.show();
+    }
+
+
+    private void passBookDocNow(String did) {
+        passPayload("{\"reason\":\"bookDocNow\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"pName\":\""+patientName+"\"}");
+    }
+
+    private void goToDoctorContactAct(String docName, String did){
+        //go to another act
+        Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
+        myIntent.putExtra("did", did); //Optional parameters
+        myIntent.putExtra("docName", docName); //Optional parameters
+        MyDoctorsActivity.this.startActivity(myIntent);
+        finish();
+    }
+
+
 }

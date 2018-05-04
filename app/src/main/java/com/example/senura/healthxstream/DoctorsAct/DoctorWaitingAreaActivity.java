@@ -263,7 +263,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
 
     private void sendTheConfirmationStatus(String pid,boolean state){
-        passPayload("{\"reason\":\"bookDocConfirmed\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\", \"state\":"+state+"}");
+        passPayload("{\"reason\":\"bookDocConfirmStatus\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\", \"state\":"+state+"}");
     }
 
 
