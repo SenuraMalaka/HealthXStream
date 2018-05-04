@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,8 +24,11 @@ import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.text.DateFormat;
@@ -51,6 +55,9 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     //Alert
     private boolean isDisplayingAnAlert=false;
+
+    //Buttons
+    Button button_Search=null;
 
 
 
@@ -86,14 +93,16 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     }
 
 
-    private void hideSearchTextArea(){
+    private void hideSearchTextArea(boolean state){
         LinearLayout lL_Search;
         lL_Search = (LinearLayout) findViewById(R.id.linearLayout_DWA_SearchingTextArea);
+
+        if(state)
         lL_Search.setVisibility(View.GONE);
+        else lL_Search.setVisibility(View.VISIBLE);
     }
 
     private void setButtons(){
-        Button button_Search;
 
         //BodyTemp
         button_Search = (Button) findViewById(R.id.button_DWA_Search);
@@ -101,7 +110,8 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
             @Override
             public void onClick(View v) {
                 connectMqttClient();//subscribe to topic
-                hideSearchTextArea();
+                hideSearchTextArea(false);
+                button_Search.setVisibility(View.GONE);
             }
         });
 
@@ -168,17 +178,38 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     private void isDocAvailable_res(String res){
 
         String pName=JsonAccess.getJsonInsideObj(res,"pName");
-        addToPatientList(pName);
-
         String pid=JsonAccess.getJsonInsideObj(res,"pid");
+
+        if(!isPatientArrayHas(pid +" - "+pName))
+        addToPatientList(pid +" - "+pName);
+
+
         String payloadToBeSend="{\"reason\":\"docIsAvailable\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\"}";
         //sample: {"reason":"isDocAvailable", "pid":"fa18a0ec-974d-4d26-ba26-bcb67a84c0ee"}
        passPayload(payloadToBeSend);
     }
 
 
-    private void addToPatientList(String pName){
-        arrayAdapter.add(pName);
+    private boolean isPatientArrayHas(String pidANDpName){
+
+        Toast.makeText(DoctorWaitingAreaActivity.this,"pArray : : "+patients_list, Toast.LENGTH_LONG).show();
+
+
+        boolean state=false;
+        for(int i=0;i<patients_list.size();i++){
+
+            if(pidANDpName.equals(patients_list.get(i))){
+                state=true;
+            }
+        }
+
+        return state;
+    }
+
+
+    private void addToPatientList(String pidANDpName){
+        patients_list.add(pidANDpName);
+        arrayAdapter.add(pidANDpName);
     }
 
 
@@ -233,6 +264,50 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     private void sendTheConfirmationStatus(String pid,boolean state){
         passPayload("{\"reason\":\"bookDocConfirmed\", \"pid\":\""+pid+"\", \"did\":\""+doctorID+"\", \"state\":"+state+"}");
+    }
+
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        arrayAdapter.clear();
+        patients_list=new ArrayList<String>();
+        button_Search.setVisibility(View.VISIBLE);
+        hideSearchTextArea(true);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        disconnectClient();
+    }
+
+
+    private void disconnectClient()
+    {
+        if(client!=null) {
+            try {
+                IMqttToken disconToken = client.disconnect();
+                disconToken.setActionCallback(new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        // we are now successfully disconnected
+                        Log.d("DocWA", "Client Successfully Disconnected");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken,
+                                          Throwable exception) {
+                        // something went wrong, but probably we are disconnected anyway
+                        Log.w("DocWA", "Client is not properly disconnected");
+                    }
+                });
+            } catch (MqttException e) {
+                Log.e("DocWA", "Client Disconnect -error " + e.toString());
+            }
+        }
     }
 
 

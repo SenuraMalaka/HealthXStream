@@ -94,31 +94,31 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_MyDoC_Buttons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_DWA_Search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="10sp"
+                    android:text="Search" />
+
+                <Button
+                    android:id="@+id/button_DWA_GoBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Go Back" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/layout_MyDoC_Buttons"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_DWA_Search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:lineSpacingExtra="10sp"
-            android:text="Search" />
-
-        <Button
-            android:id="@+id/button_DWA_GoBack"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Go Back" />
-    </LinearLayout>
 
 </LinearLayout>

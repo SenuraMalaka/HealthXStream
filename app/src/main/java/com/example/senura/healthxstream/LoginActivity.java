@@ -32,9 +32,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(etEmail.getText().equals("doc")){
-                    startActivity(new Intent(LoginActivity.this, DoctorWaitingAreaActivity.class));
+                String emailText= etEmail.getText().toString();
 
+                if(emailText.equals("doc")){
+                    startActivity(new Intent(LoginActivity.this, DoctorWaitingAreaActivity.class));
                 }else {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }

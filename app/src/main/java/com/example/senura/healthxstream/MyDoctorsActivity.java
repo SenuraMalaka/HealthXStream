@@ -99,11 +99,13 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             public void onClick(View v) {
 
 
-                availableDidList = new ArrayList<String>();//should only run once
+                availableDidList= new ArrayList<String>();//should only run once
+                arrayAdapter.clear();//flush the view
+
                 passDocListReq();
 
                 //a loop with did should go here //pName should assign somehow
-                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"doctor1\"}, \"pName\":\"Sen Ma\"}");
+                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"345\", \"pName\":\"Sen Ma\"}");
 
 
                 //hide the text
