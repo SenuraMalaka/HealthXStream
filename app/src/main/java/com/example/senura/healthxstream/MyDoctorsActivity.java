@@ -2,6 +2,7 @@ package com.example.senura.healthxstream;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +50,11 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     public String jsonResponse = null;
     String clientID=uniqueIDgenerator.getUUID();
     String docLst=null;
+
+
+    //Handler
+    private int mInterval = 6000;
+    private Handler mHandler;
 
 
     //listView vars
@@ -447,6 +453,11 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             }
         }
     }
+
+
+
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.senura.healthxstream;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,10 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
     private MqttAndroidClient client = null;
 
 
+    //Handler
+    private int mInterval = 6000;
+    private Handler mHandler;
+
     private String clientID=null;
     private String did=null;
     private String docName=null;
@@ -60,6 +65,11 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
         client=clientTemp;
         setResources();
         setClientListenToThisAct();
+
+
+        //handlers
+        mHandler = new Handler();
+        startRepeatingTask();
     }
 
     private void setClientListenToThisAct(){
@@ -183,6 +193,35 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
                 Log.e("DocIll", "Client Disconnect -error " + e.toString());
             }
         }
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                Log.e("DocIll", "Handler ran Sen ");
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
 
