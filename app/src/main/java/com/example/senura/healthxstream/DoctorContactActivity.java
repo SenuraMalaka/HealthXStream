@@ -69,7 +69,7 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         String reason= JsonAccess.getJsonInsideObj(jsonResponse,"reason");
 
 
-        //Toast.makeText(DoctorContactActivity.this,"arrived -> "+message.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(DoctorContactActivity.this,"arrived -> "+message.toString(), Toast.LENGTH_SHORT).show();
 
         if (reason.equals("bookDocConfirmStatus")) {
             //sample msg = {"reason":"bookDocConfirmStatus", "pid":"patient123", "did":"doctor123", "state":true}
@@ -93,8 +93,8 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
 
             if(state){
                 //confirmed
-                Toast.makeText(DoctorContactActivity.this,"Doctor will join...", Toast.LENGTH_SHORT).show();
-                goToDoctorDiagnoseAct(docName, did);//go to diagnose act
+                Toast.makeText(DoctorContactActivity.this,"Doctor Requests Your Illness Info...", Toast.LENGTH_SHORT).show();
+                goToIllnessAwarenessAct(docName, did);//go to Illness Awareness act
 
             }else{
                 //Doctor cancelled the booking
@@ -103,26 +103,32 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
                 startActivity(new Intent(DoctorContactActivity.this, MainActivity.class));
                 finish();
             }
+        }else{
+            disconnectClient();
+            Toast.makeText(DoctorContactActivity.this,"Doctor cannot be authorised..!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(DoctorContactActivity.this, MainActivity.class));
+            finish();
         }
     }
 
 
 
-    private void goToDoctorDiagnoseAct(String docName, String did){
-        //go to another act
-        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
-        myIntent.putExtra("did", did); //Optional parameters
-        myIntent.putExtra("docName", docName); //Optional parameters
-        myIntent.putExtra("clientID", clientID); //Optional parameters
-        DoctorDiagnoseActivity.clientTemp=client;//setMqttclient
-        DoctorDiagnoseActivity.mConnectionTemp=mConnection;//setMqttConnection
-        DoctorContactActivity.this.startActivity(myIntent);
-        finish();
-    }
+//this hould be deleted
+//    private void goToDoctorDiagnoseAct(String docName, String did){
+//        //go to another act
+//        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
+//        myIntent.putExtra("did", did); //Optional parameters
+//        myIntent.putExtra("docName", docName); //Optional parameters
+//        myIntent.putExtra("clientID", clientID); //Optional parameters
+//        DoctorDiagnoseActivity.clientTemp=client;//setMqttclient
+//        DoctorDiagnoseActivity.mConnectionTemp=mConnection;//setMqttConnection
+//        DoctorContactActivity.this.startActivity(myIntent);
+//        finish();
+//    }
 
     private void goToIllnessAwarenessAct(String docName, String did){
         //go to another act
-        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
+        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorIllnessAwarenessActivity.class);
         myIntent.putExtra("did", did); //Optional parameters
         myIntent.putExtra("docName", docName); //Optional parameters
         myIntent.putExtra("clientID", clientID); //Optional parameters
