@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,10 +33,17 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     private String docName=null;
 
     private String jsonResponse = null;
-    private boolean isFirstTimeMessageBoxUpdates=false;
+    private boolean isFirstTimeMessageBoxUpdates=true;
 
     //View
     TextView textView_MessageBox;
+    Button button_Pulse=null;
+    Button button_Temp=null;
+    Button button_EndSession=null;
+    Button button_SendMsg=null;
+    EditText editText_MsgTyped=null;
+
+    private boolean isRetainMqttState=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +99,6 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
         }
 
-
     }
 
     @Override
@@ -126,8 +135,8 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
                 Toast.makeText(DoctorDiagnoseActivity.this,"Inside 1st if", Toast.LENGTH_SHORT).show();
 
-                if(!isFirstTimeMessageBoxUpdates){
-                    isFirstTimeMessageBoxUpdates=true;
+                if(isFirstTimeMessageBoxUpdates){
+                    isFirstTimeMessageBoxUpdates=false;
                     textView_MessageBox.setText("");//only runs once
                     Toast.makeText(DoctorDiagnoseActivity.this,"Inside 2nd if", Toast.LENGTH_SHORT).show();
 
@@ -152,11 +161,67 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
     private void setResources(){
         textView_MessageBox = (TextView) findViewById(R.id.textView_DD_Messages);
+
+        button_EndSession= (Button) findViewById(R.id.button_DD_EndSession);
+        button_Pulse= (Button) findViewById(R.id.button_DD_PulseMonitor);
+        button_Temp= (Button) findViewById(R.id.button_DD_TempMonitor);
+        editText_MsgTyped = (EditText) findViewById(R.id.editText_DD_MessageTyped);
+        button_SendMsg = (Button) findViewById(R.id.button_DD_SendMessage);
+
+        button_EndSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMainMenu("Successfully ended the Session..!");
+            }
+        });
+
+
+        button_Temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //send msg
+            }
+        });
+
+        button_Pulse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //send msg
+            }
+        });
+
+        button_SendMsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendTextMessageToDoctor();
+
+            }
+        });
+
     }
 
 
     private void addTextToMsgBox(String text){
         textView_MessageBox.setText(textView_MessageBox.getText().toString()+"\n-----\n"+text);
+    }
+
+
+    private void sendTextMessageToDoctor(){
+
+        String _msgTyped=editText_MsgTyped.getText().toString();
+
+        if(did!=null && !_msgTyped.equals("")) {
+            String passingPayload = "{\"reason\":\"pMsg\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"temp\":\"null\"," +
+                    " \"pulse\":\"null\", \"msg\":\""+_msgTyped+"\"}";
+
+            String passingTopic = "healthxtream/doctor/"+did;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+            textView_MessageBox.setText("");//only runs once
+            isFirstTimeMessageBoxUpdates=false;
+            addTextToMsgBox("Me -> "+_msgTyped);
+            editText_MsgTyped.setText("");//clear msgBox
+        }
     }
 
 
@@ -184,6 +249,29 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
                 Log.e("DocD", "Client Disconnect -error " + e.toString());
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(!isRetainMqttState) {
+            passDisconnectMessage();
+            disconnectClient();
+        }
+    }
+
+
+    public void passDisconnectMessage() {
+
+        if(did!=null) {
+            String passingPayload = "{\"reason\":\"pStopped\",\"pid\":\"" + clientID + "\"}";
+
+            String passingTopic = "healthxtream/doctor/"+did;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+        }
+
     }
 
 

@@ -135,6 +135,7 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
 
             mConnection.publishMessage(passingPayload, passingTopic);
             addTextToMsgBox("Me -> "+_msgTyped);
+            isFirstTimeMessageBoxUpdates=false;
             editText_MsgTyped.setText("");//clear msgBox
         }
     }
