@@ -1,6 +1,7 @@
 package com.example.senura.healthxstream;
 
 import android.content.Context;
+import android.hardware.usb.UsbManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,11 +10,14 @@ import android.widget.ImageButton;
 
 import com.example.senura.healthxstream.usbSerialAnalyserPackage.SerialMonitor;
 
+import java.util.HashMap;
+
 public class BodyTemperatureActivity extends AppCompatActivity {
 
     Button buttonUSBOpen=null;
     Button buttonUSBClose=null;
     SerialMonitor serialMonitor=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,12 @@ public class BodyTemperatureActivity extends AppCompatActivity {
         setButtonUSBClose();
 
     }
+
+
+
+
+
+
 
 
     private void setButtonUSBOpen(){
@@ -65,6 +75,7 @@ public class BodyTemperatureActivity extends AppCompatActivity {
         else{
             if(!serialMonitor.equals(null))
             serialMonitor.closeTheUSBConnection();
+
         }
     }
 

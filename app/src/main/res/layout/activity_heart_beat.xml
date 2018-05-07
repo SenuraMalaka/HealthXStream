@@ -27,11 +27,11 @@
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView_HB_TItle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
@@ -40,6 +40,20 @@
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/button_HB_Scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Scan" />
+
+        <Button
+            android:id="@+id/button_HB_Stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,7 +64,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView_BT_BPM"
+            android:id="@+id/textView_HB_BPM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
