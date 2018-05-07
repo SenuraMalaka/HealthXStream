@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,14 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
     private EditText editText_illnessInfo=null;
 
+
+    //res
+    LinearLayout linearLayout_IllnessInfo=null;
+    LinearLayout linearLayout_WaitingForDoc=null;
+    Button button_CancelSession=null;
+
+    private boolean isRetainMqttState=false;
+
     private String patientName="Sen Ma";
 
 
@@ -79,6 +88,11 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
     private void setResources(){
         editText_illnessInfo = (EditText) findViewById(R.id.editText_DIA_IllnessInfo);
+        button_CancelSession = (Button) findViewById(R.id.button_DIA_CancelSession);
+        linearLayout_IllnessInfo =(LinearLayout) findViewById(R.id.linearLayout_DIA_IllnessDetails);
+        linearLayout_WaitingForDoc=(LinearLayout) findViewById(R.id.linearLayout_DIA_waitingForDoc);
+
+        linearLayout_WaitingForDoc.setVisibility(View.GONE);
 
 
         Button button_sendInfo;
@@ -89,6 +103,16 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 sendmyInfo(editText_illnessInfo.getText().toString());
+                linearLayout_IllnessInfo.setVisibility(View.GONE);
+                linearLayout_WaitingForDoc.setVisibility(View.VISIBLE);
+            }
+        });
+
+        button_CancelSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passDisconnectMessage();
+                goToMainMenu("Successfully Cancelled the Session..!");
             }
         });
 
@@ -169,7 +193,9 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
         Boolean state =passPayload("{\"reason\":\"myInfo\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"name\":\""+patientName+"\", \"msg\":\""+text+"\"}");
         if(state){
             Toast.makeText(DoctorIllnessAwarenessActivity.this,"Doctor will join...", Toast.LENGTH_SHORT).show();
-            goToDoctorDiagnoseAct(docName, did);
+            //hide the textboxes and wait
+            //isRetainMqttState=true;
+            //goToDoctorDiagnoseAct(docName, did);
         }else{
             disconnectClient();
             startActivity(new Intent(DoctorIllnessAwarenessActivity.this, MainActivity.class));
@@ -234,8 +260,11 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
     @Override
     public void onStop() {
         super.onStop();
-        stopRepeatingTask();
-        passDisconnectMessage();
+
+        if(!isRetainMqttState) {
+            stopRepeatingTask();
+            passDisconnectMessage();
+        }
     }
 
 

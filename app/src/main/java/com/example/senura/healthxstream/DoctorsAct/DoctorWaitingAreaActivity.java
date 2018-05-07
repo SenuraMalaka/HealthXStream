@@ -65,6 +65,9 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     private String patientID=null;
 
 
+    private boolean isRetainMqttState=false;
+
+
 
 
     @Override
@@ -168,7 +171,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                 //sample msg = {"reason":"bookDocNow", "pid":"patient123", "pName":"patient1"}
                 bookDocNow_res(jsonResponse);
             }else if (reason.equals("pStopped")) {
-                //sample msg = {"reason":"docStopped","did":"doc1234"}
+                //sample msg = {"reason":"pStopped","did":"doc1234"}
                 String _pid=JsonAccess.getJsonInsideObj(jsonResponse,"pid");
 
                 if(_pid.equals(patientID)){
@@ -256,6 +259,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                         sendTheConfirmationStatus(pid, true);
                         patientID=pid;
                         Toast.makeText(DoctorWaitingAreaActivity.this, "OK button click", Toast.LENGTH_SHORT).show();
+                        goToDocNeedIllnessAct("Patient will send the illness details..");
                     }
                 })
                 .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
@@ -336,8 +340,10 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     public void onStop() {
         super.onStop();
 
-        passDisconnectMessage();
-        disconnectClient();
+        if(!isRetainMqttState) {
+            passDisconnectMessage();
+            disconnectClient();
+        }
     }
 
     public void passDisconnectMessage() {
@@ -362,6 +368,23 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         DoctorWaitingAreaActivity.this.startActivity(myIntent);
         finish();
     }
+
+
+    private void goToDocNeedIllnessAct(String msg){
+        //go to another act
+        Toast.makeText(DoctorWaitingAreaActivity.this , msg, Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(DoctorWaitingAreaActivity.this, DocNeedIllnessActivity.class);
+        myIntent.putExtra("did", doctorID); //Optional parameters
+        myIntent.putExtra("pid", patientID); //Optional parameters
+        DocNeedIllnessActivity.clientTemp=client;//setMqttclient
+        DocNeedIllnessActivity.mConnectionTemp=mConnection;//setMqttConnection
+        DoctorWaitingAreaActivity.this.startActivity(myIntent);
+        isRetainMqttState=true;
+        finish();
+    }
+
+
+
 
 
 

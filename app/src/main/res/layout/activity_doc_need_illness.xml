@@ -72,6 +72,20 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/linearLayout_DNI_AgreeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_DNI_Agree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:text="Agree" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/layout_DNI_Buttons"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

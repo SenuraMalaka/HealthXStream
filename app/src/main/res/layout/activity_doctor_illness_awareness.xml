@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".DoctorIllnessAwarenessActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout_DIA_IllnessDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView2"
@@ -20,6 +23,22 @@
             android:layout_weight="1"
             android:text="Type Illness Details"
             android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView_DIA"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@mipmap/cardiogram_logo" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editText_DIA_IllnessInfo"
@@ -38,6 +57,37 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Send" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_DIA_waitingForDoc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView_DIA2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@mipmap/cardiogram_logo" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Please wait while Doctor Responds to Illness"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_DIA_CancelSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Cancel Session" />
 
 </LinearLayout>
