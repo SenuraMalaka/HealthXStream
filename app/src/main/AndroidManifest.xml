@@ -37,7 +37,8 @@
         <activity android:name=".DoctorContactActivity" />
         <activity android:name=".DoctorsAct.DoctorWaitingAreaActivity" />
         <activity android:name=".DoctorDiagnoseActivity" />
-        <activity android:name=".DoctorIllnessAwarenessActivity"></activity>
+        <activity android:name=".DoctorIllnessAwarenessActivity" />
+        <activity android:name=".DoctorsAct.DocNeedIllnessActivity"></activity>
     </application>
 
 </manifest>
