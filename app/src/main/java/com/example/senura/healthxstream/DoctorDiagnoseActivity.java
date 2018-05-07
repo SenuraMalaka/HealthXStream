@@ -79,6 +79,14 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
         if (reason.equals("docMsg")) {
             //sample msg = {"reason":"docMsg", "pid":"patient123", "did":"doctor123", "sensorType":"temp", "msg":"Please scan the temp"}
            docMsg_resHandler(jsonResponse);
+        }else if (reason.equals("docStopped")) {
+            //sample msg = {"reason":"docStopped","did":"doc1234"}
+            String _did=JsonAccess.getJsonInsideObj(jsonResponse,"did");
+
+            if(_did.equals(did)){
+                goToMainMenu("Doctor Disconnected..!");
+            }
+
         }
 
 
@@ -87,6 +95,17 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
 
+    }
+
+
+
+    //when Other one Stopped
+    private void goToMainMenu(String msg){
+        //go to another act
+        Toast.makeText(DoctorDiagnoseActivity.this , msg, Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(DoctorDiagnoseActivity.this, MainActivity.class);
+        DoctorDiagnoseActivity.this.startActivity(myIntent);
+        finish();
     }
 
 
@@ -102,7 +121,7 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
         if(did.equals(_did)){
 
-            if(!_sensorType.equals("null")){
+            if(_sensorType.equals("null")){
                 //no sensor involved
 
                 Toast.makeText(DoctorDiagnoseActivity.this,"Inside 1st if", Toast.LENGTH_SHORT).show();

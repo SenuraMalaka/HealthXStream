@@ -10,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.senura.healthxstream.DoctorDiagnoseActivity;
-import com.example.senura.healthxstream.DoctorIllnessAwarenessActivity;
 import com.example.senura.healthxstream.LoginActivity;
 import com.example.senura.healthxstream.R;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
@@ -148,7 +146,6 @@ public class DocNeedIllnessActivity extends AppCompatActivity implements MqttCal
 
 
 
-    //when Other one Stopped
     private void goToPatientDiagnoseAct(String msg){
         //go to another act
         Toast.makeText(DocNeedIllnessActivity.this , msg, Toast.LENGTH_SHORT).show();

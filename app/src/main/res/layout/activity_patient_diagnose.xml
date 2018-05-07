@@ -51,7 +51,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:layout_weight="1">
 
         <LinearLayout
@@ -83,25 +83,25 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="0.7"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/button_PD_PulseMonitor"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/button_PD_ReqPulseMonitor"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.35"
-                    android:text="Scan Pulse Rate"
+                    android:layout_weight="1"
+                    android:text="Request Pulse Rate Scanning"
                     android:visibility="visible" />
 
                 <Button
-                    android:id="@+id/button_PD_TempMonitor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.35"
-                    android:text="Scan Temperature" />
+                    android:id="@+id/button_PD_ReqTempMonitor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Request to Scan Body Temperature" />
 
             </LinearLayout>
 
@@ -114,12 +114,37 @@
                 <Button
                     android:id="@+id/button_PD_EndSession"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
                     android:text="End Session" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editText_PD_MessageTyped"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:contentDescription="Illness Details"
+            android:ems="10"
+            android:hint="Type Here"
+            android:inputType="textMultiLine"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button_PD_SendMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:text="Send" />
+    </LinearLayout>
 </LinearLayout>
 
