@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.BodyTemperatureActivity;
+import com.example.senura.healthxstream.DoctorIllnessAwarenessActivity;
+import com.example.senura.healthxstream.LoginActivity;
 import com.example.senura.healthxstream.MainActivity;
 import com.example.senura.healthxstream.MyDoctorsActivity;
 import com.example.senura.healthxstream.R;
@@ -58,6 +60,9 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     //Buttons
     Button button_Search=null;
+
+
+    private String patientID=null;
 
 
 
@@ -162,7 +167,16 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
             } else if (reason.equals("bookDocNow")) {
                 //sample msg = {"reason":"bookDocNow", "pid":"patient123", "pName":"patient1"}
                 bookDocNow_res(jsonResponse);
-            }
+            }else if (reason.equals("pStopped")) {
+                //sample msg = {"reason":"docStopped","did":"doc1234"}
+                String _pid=JsonAccess.getJsonInsideObj(jsonResponse,"pid");
+
+                if(_pid.equals(patientID)){
+                    goToLogin("Patient Disconnected..!");
+                }
+
+            }////
+
         }//if (isDisplayingAnAlert) - end
 
         Toast.makeText(DoctorWaitingAreaActivity.this,"Message arrived: "+jsonResponse, Toast.LENGTH_SHORT).show();
@@ -240,6 +254,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                     public void onClick(DialogInterface dialog,int id) {
                         isDisplayingAnAlert=false;
                         sendTheConfirmationStatus(pid, true);
+                        patientID=pid;
                         Toast.makeText(DoctorWaitingAreaActivity.this, "OK button click", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -283,7 +298,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     @Override
     public void onPause() {
         super.onPause();
-        disconnectClient();
+
     }
 
 
@@ -310,6 +325,42 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                 Log.e("DocWA", "Client Disconnect -error " + e.toString());
             }
         }
+    }
+
+
+
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        passDisconnectMessage();
+        disconnectClient();
+    }
+
+    public void passDisconnectMessage() {
+
+        if(patientID!=null) {
+            String passingPayload = "{\"reason\":\"docStopped\",\"did\":\"" + doctorID + "\"}";
+
+            String passingTopic = "healthxtream/patient/"+patientID;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+        }
+
+    }
+
+
+
+    //when Other one Stopped
+    private void goToLogin(String msg){
+        //go to another act
+        Toast.makeText(DoctorWaitingAreaActivity.this , msg, Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(DoctorWaitingAreaActivity.this, LoginActivity.class);
+        DoctorWaitingAreaActivity.this.startActivity(myIntent);
+        finish();
     }
 
 

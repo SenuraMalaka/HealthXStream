@@ -108,7 +108,19 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
         String reason= JsonAccess.getJsonInsideObj(jsonResponse,"reason");
 
-    }
+        if (reason.equals("docStopped")) {
+            //sample msg = {"reason":"docStopped","did":"doc1234"}
+            String _did=JsonAccess.getJsonInsideObj(jsonResponse,"did");
+
+            if(_did.equals(did)){
+                goToMainMenu("Doctor Disconnected..!");
+            }
+
+        }////
+
+
+
+    }///////////msgArrivedEnd
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
@@ -134,6 +146,18 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
             Toast.makeText(DoctorIllnessAwarenessActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
 
         Log.d("TagpassedPayload", passingPayload);
+
+        return isPublished;
+    }
+
+
+    public boolean passDisconnectMessage() {
+
+        String passingPayload = "{\"reason\":\"pStopped\",\"pid\":\""+clientID+"\"}";
+
+        String passingTopic = "healthxtream/doctor/"+did;
+
+        boolean isPublished =mConnection.publishMessage(passingPayload, passingTopic);
 
         return isPublished;
     }
@@ -170,6 +194,17 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
     }
 
 
+    //when Other one Stopped
+    private void goToMainMenu(String msg){
+        //go to another act
+        Toast.makeText(DoctorIllnessAwarenessActivity.this , msg, Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(DoctorIllnessAwarenessActivity.this, MainActivity.class);
+        DoctorIllnessAwarenessActivity.this.startActivity(myIntent);
+        finish();
+    }
+
+
+
     private void disconnectClient()
     {
         if(client!=null) {
@@ -196,12 +231,20 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopRepeatingTask();
+        passDisconnectMessage();
+    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopRepeatingTask();
+
     }
+
 
     Runnable mStatusChecker = new Runnable() {
         @Override
