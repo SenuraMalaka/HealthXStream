@@ -1,6 +1,8 @@
 package com.example.senura.healthxstream.DoctorsAct;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -100,14 +102,14 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
         button_ReqTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //send msg
+              showAlert("temp");
             }
         });
 
         button_ReqPulse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //send msg
+                showAlert("pulse");
             }
         });
 
@@ -123,22 +125,88 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
 
 
 
+
+    private void showAlert(final String device){
+
+        String _deviceName="Body Temperature Monitor";
+        String _Msg="Do you want patient to use ";
+
+
+        if(device.equals("pulse"))
+        {
+            _deviceName="Pulse Sensor";
+        }
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                PatientDiagnoseActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle("Request a sensor reading");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(_Msg+_deviceName+" ?")
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        sendDeviceReqToPatient(device);
+                        String deviceName="Body Temperature Monitor";
+                        if(device.equals("pulse")) deviceName="Pulse Sensor";
+                        Toast.makeText(PatientDiagnoseActivity.this,"Requested the reading from "+deviceName, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Toast.makeText(PatientDiagnoseActivity.this,"Cancelled", Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+
+    private void sendDeviceReqToPatient(String device){
+        if(patientID!=null) {
+            String passingPayload = "{\"reason\":\"docMsg\", \"pid\":\""+patientID+"\", \"did\":\""+doctorID+"\", " +
+                    "\"sensorType\":\""+device+"\", \"msg\":\"null\"}";
+
+            String passingTopic = "healthxtream/patient/"+patientID;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+
+        }
+    }
+
+
     private void sendTextMessageToPatient(){
 
         String _msgTyped=editText_MsgTyped.getText().toString();
 
+
         if(patientID!=null && !_msgTyped.equals("")) {
+
+            if(isFirstTimeMessageBoxUpdates){textView_messageBx.setText("");}
+
             String passingPayload = "{\"reason\":\"docMsg\", \"pid\":\""+patientID+"\", \"did\":\""+doctorID+"\", " +
                     "\"sensorType\":\"null\", \"msg\":\""+_msgTyped+"\"}";
 
             String passingTopic = "healthxtream/patient/"+patientID;
 
             mConnection.publishMessage(passingPayload, passingTopic);
+
             addTextToMsgBox("Me -> "+_msgTyped);
             isFirstTimeMessageBoxUpdates=false;
             editText_MsgTyped.setText("");//clear msgBox
+
         }
     }
+
 
 
     @Override

@@ -146,10 +146,10 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
             }
 
 
-            if(_sensorType.equals("temp")){
-
+            else if(_sensorType.equals("temp")){
+                Toast.makeText(DoctorDiagnoseActivity.this,"Temp Sensor needed", Toast.LENGTH_SHORT).show();
             }else if(_sensorType.equals("pulse")){
-
+                Toast.makeText(DoctorDiagnoseActivity.this,"Pulse Sensor needed", Toast.LENGTH_SHORT).show();
             }else{
                 //payload format is wrong //could be null
             }
@@ -211,6 +211,9 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
         String _msgTyped=editText_MsgTyped.getText().toString();
 
         if(did!=null && !_msgTyped.equals("")) {
+
+            if(isFirstTimeMessageBoxUpdates){textView_MessageBox.setText("");}
+
             String passingPayload = "{\"reason\":\"pMsg\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"temp\":\"null\"," +
                     " \"pulse\":\"null\", \"msg\":\""+_msgTyped+"\"}";
 
