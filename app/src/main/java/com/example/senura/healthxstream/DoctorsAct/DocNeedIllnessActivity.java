@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.senura.healthxstream.DoctorDiagnoseActivity;
 import com.example.senura.healthxstream.DoctorIllnessAwarenessActivity;
 import com.example.senura.healthxstream.LoginActivity;
 import com.example.senura.healthxstream.R;
@@ -146,6 +147,21 @@ public class DocNeedIllnessActivity extends AppCompatActivity implements MqttCal
     }
 
 
+
+    //when Other one Stopped
+    private void goToPatientDiagnoseAct(String msg){
+        //go to another act
+        Toast.makeText(DocNeedIllnessActivity.this , msg, Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(DocNeedIllnessActivity.this, PatientDiagnoseActivity.class);
+        myIntent.putExtra("did", doctorID); //Optional parameters
+        myIntent.putExtra("pid", patientID); //Optional parameters
+        PatientDiagnoseActivity.clientTemp=client;//setMqttclient
+        PatientDiagnoseActivity.mConnectionTemp=mConnection;//setMqttConnection
+        DocNeedIllnessActivity.this.startActivity(myIntent);
+        finish();
+    }
+
+
     public void passDisconnectMessage() {
 
         if(patientID!=null) {
@@ -189,10 +205,22 @@ public class DocNeedIllnessActivity extends AppCompatActivity implements MqttCal
         button_Agree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //agree msg send
+                sendAgreePayload();
+                isRetainMqttState=true;
+                goToPatientDiagnoseAct("Patient is Ready to chat");
             }
         });
 
+    }
+
+    private void sendAgreePayload(){
+        if(patientID!=null) {
+            String passingPayload = "{\"reason\":\"illnessAgreed\",\"did\":\"" + doctorID + "\"}";
+
+            String passingTopic = "healthxtream/patient/"+patientID;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+        }
     }
 
 

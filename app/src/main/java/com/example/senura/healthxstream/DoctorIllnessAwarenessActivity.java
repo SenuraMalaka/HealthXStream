@@ -140,7 +140,19 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
                 goToMainMenu("Doctor Disconnected..!");
             }
 
-        }////
+        }
+        else if (reason.equals("illnessAgreed")) {
+            //sample msg = {"reason":"docStopped","did":"doc1234"}
+            String _did=JsonAccess.getJsonInsideObj(jsonResponse,"did");
+
+            if(_did.equals(did)){
+                isRetainMqttState=true;
+                goToDoctorDiagnoseAct(docName, did);
+            }
+
+        }//
+
+
 
 
 
