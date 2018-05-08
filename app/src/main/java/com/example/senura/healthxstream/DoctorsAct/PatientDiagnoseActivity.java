@@ -173,6 +173,9 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
 
     private void sendDeviceReqToPatient(String device){
         if(patientID!=null) {
+
+            makeSensorReqButtonVisible(false, device);//hide button
+
             String passingPayload = "{\"reason\":\"docMsg\", \"pid\":\""+patientID+"\", \"did\":\""+doctorID+"\", " +
                     "\"sensorType\":\""+device+"\", \"msg\":\"null\"}";
 
@@ -180,6 +183,30 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
 
             mConnection.publishMessage(passingPayload, passingTopic);
 
+        }
+    }
+
+
+    private void makeSensorReqButtonVisible(Boolean state, String device){
+        int visibility=0;
+        int inverseVisibility=0;
+
+        if(state){
+            visibility=View.VISIBLE;
+            inverseVisibility=View.INVISIBLE;
+        }
+        else{
+            visibility=View.INVISIBLE;
+            inverseVisibility=View.VISIBLE;
+        }
+
+
+        if(device.equals("temp")){
+            button_ReqTemp.setVisibility(visibility);
+            button_ReqPulse.setVisibility(inverseVisibility);
+        }else if(device.equals("pulse")){
+            button_ReqPulse.setVisibility(visibility);
+            button_ReqTemp.setVisibility(inverseVisibility);
         }
     }
 
@@ -271,6 +298,10 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
                     textView_messageBx.setText("");//only runs once
                 }
                 addTextToMsgBox("Patient -> "+_msg);
+            }else if(_pulse.equals("cancelled")){
+                makeSensorReqButtonVisible(true, "pulse");//show button
+            }else if(_temp.equals("cancelled")){
+                makeSensorReqButtonVisible(true, "temp");//show button
             }else if(!_pulse.equals("null")){
                 addTextToMsgBox("Patient Pulse-> "+_msg);
             }else if(!_temp.equals("null")){

@@ -1,17 +1,29 @@
 package com.example.senura.healthxstream;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
+import com.felhr.usbserial.UsbSerialDevice;
+import com.felhr.usbserial.UsbSerialInterface;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -20,6 +32,11 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.w3c.dom.Text;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCallback {
 
@@ -35,6 +52,16 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     private String jsonResponse = null;
     private boolean isFirstTimeMessageBoxUpdates=true;
 
+    //USB Monitor Vars
+    public final String ACTION_USB_PERMISSION = "com.example.senura.healthxstream.USB_PERMISSION";
+    UsbManager usbManager;
+    UsbDevice device;
+    UsbSerialDevice serialPort;
+    UsbDeviceConnection connection;
+
+    private String currentReadingDevice="null";
+
+
     //View
     TextView textView_MessageBox;
     Button button_Pulse=null;
@@ -42,6 +69,9 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     Button button_EndSession=null;
     Button button_SendMsg=null;
     EditText editText_MsgTyped=null;
+    TextView textView_SensorReadingTitle=null;
+    TextView textView_SensorReading=null;
+    LinearLayout linearLayout_SensorReadingBox=null;
 
     private boolean isRetainMqttState=false;
 
@@ -61,6 +91,18 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
         setResources();
 
         setClientListenToThisAct();
+        initUSBSerialCon();
+    }
+
+
+    private void initUSBSerialCon(){
+        usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(broadcastReceiver, filter);
     }
 
 
@@ -146,10 +188,8 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
             }
 
 
-            else if(_sensorType.equals("temp")){
-                Toast.makeText(DoctorDiagnoseActivity.this,"Temp Sensor needed", Toast.LENGTH_SHORT).show();
-            }else if(_sensorType.equals("pulse")){
-                Toast.makeText(DoctorDiagnoseActivity.this,"Pulse Sensor needed", Toast.LENGTH_SHORT).show();
+            else if(_sensorType.equals("temp") || _sensorType.equals("pulse")){
+                showSensorReqAlert(_sensorType);
             }else{
                 //payload format is wrong //could be null
             }
@@ -167,6 +207,13 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
         button_Temp= (Button) findViewById(R.id.button_DD_TempMonitor);
         editText_MsgTyped = (EditText) findViewById(R.id.editText_DD_MessageTyped);
         button_SendMsg = (Button) findViewById(R.id.button_DD_SendMessage);
+
+        //For Device Readings
+        textView_SensorReadingTitle=(TextView) findViewById(R.id.textView_DD_DeviceReadTitle);
+        textView_SensorReading=(TextView) findViewById(R.id.textView_DD_Temp);
+        linearLayout_SensorReadingBox=(LinearLayout) findViewById(R.id.linearLayout_DD_DeviceMeter);
+
+        linearLayout_SensorReadingBox.setVisibility(View.GONE);
 
         button_EndSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,11 +267,30 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
             String passingTopic = "healthxtream/doctor/"+did;
 
             mConnection.publishMessage(passingPayload, passingTopic);
-            textView_MessageBox.setText("");//only runs once
             isFirstTimeMessageBoxUpdates=false;
             addTextToMsgBox("Me -> "+_msgTyped);
             editText_MsgTyped.setText("");//clear msgBox
         }
+    }
+
+
+    private void sendCancelSensorReqToDoc(String sensor){
+
+        String tempVal="null";
+        String pulseVal="null";
+
+        if(sensor.equals("temp")){
+            tempVal="cancelled";
+        }else{
+            pulseVal="cancelled";
+        }
+
+            String passingPayload = "{\"reason\":\"pMsg\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"temp\":\""+tempVal+"\"," +
+                    " \"pulse\":\""+pulseVal+"\", \"msg\":\"null\"}";
+
+            String passingTopic = "healthxtream/doctor/"+did;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
     }
 
 
@@ -276,6 +342,218 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
         }
 
     }
+
+
+    ////////USB Serial Controllers - Begin/////////////
+    UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() { //Defining a Callback which triggers whenever data is read.
+        @Override
+        public void onReceivedData(byte[] arg0) {
+            String data = null;
+            try {
+                data = new String(arg0, "UTF-8");
+                //data.concat("/n");
+                printNow(data);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    };
+
+
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                if (intent.getAction().equals(ACTION_USB_PERMISSION)) {
+                    boolean granted = intent.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
+                    if (granted) {
+                        connection = usbManager.openDevice(device);
+                        serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
+                        if (serialPort != null) {
+                            if (serialPort.open()) { //Set Serial Connection Parameters.
+                                serialPort.setBaudRate(9600);//9600
+                                serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
+                                serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
+                                serialPort.setParity(UsbSerialInterface.PARITY_NONE);
+                                serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+                                serialPort.read(mCallback);
+
+                                //printNow("Serial Connection Opened!\n");
+                                Toast.makeText(DoctorDiagnoseActivity.this,"Serial Connection Opened", Toast.LENGTH_LONG).show();
+                                linearLayout_SensorReadingBox.setVisibility(View.VISIBLE);
+
+
+                            } else {
+                                Log.d("SERIAL", "PORT NOT OPEN");
+                            }
+                        } else {
+                            Log.d("SERIAL", "PORT IS NULL");
+                        }
+                    } else {
+                        Log.d("SERIAL", "PERM NOT GRANTED");
+                    }
+                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                    onClickStart("temp");
+                    Toast.makeText(DoctorDiagnoseActivity.this,"usb attached", Toast.LENGTH_LONG).show();
+
+                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    onClickStop();
+                    currentReadingDevice="null";
+                    Toast.makeText(DoctorDiagnoseActivity.this,"usb detached", Toast.LENGTH_LONG).show();
+
+                }
+            }catch (Exception ex){
+                Toast.makeText(DoctorDiagnoseActivity.this,"Exception occured +"+ex.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+
+        }
+
+        ;
+    };
+
+
+
+    public void onClickStart(String deviceName) {
+
+        try {
+            HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+            if (!usbDevices.isEmpty()) {
+                boolean keep = true;
+                for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                    device = entry.getValue();
+                    int deviceVID = device.getVendorId();
+                    if (deviceVID == 0x2341)//Arduino Vendor ID
+                    {
+                        PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                        usbManager.requestPermission(device, pi);
+                        keep = false;
+                    } else {
+                        connection = null;
+                        device = null;
+                    }
+
+                    if (!keep)
+                        break;
+                }
+            }
+        }catch (Exception ex){
+            Toast.makeText(DoctorDiagnoseActivity.this,"Error onclick +"+ex.getMessage(), Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+
+    public void onClickStop() {
+        serialPort.close();
+        //printNow("\nSerial Connection Closed! \n");
+
+    }
+
+
+    private void printNow(String text){
+        float tempCount=0;
+        try {
+            tempCount=Float.parseFloat(text);
+        }catch (NumberFormatException ex){
+            tempCount=12.0f;
+        }
+
+        String messageTemp="";
+
+        if(tempCount<30 && tempCount>22 && currentReadingDevice.equals("temp")){
+            //sendMsgToDoc wit read count
+            messageTemp=String.valueOf(tempCount)+" C'";
+        }else if(tempCount<30 && tempCount>23 && currentReadingDevice.equals("pulse")){
+            //sendMsgToDoc wit read count
+            messageTemp=String.valueOf(tempCount)+" BPM";
+        }
+
+        final String message=messageTemp;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(!message.equals(""))
+                    textView_SensorReading.setText(message);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        serialPort.close();
+        unregisterReceiver(broadcastReceiver);
+
+    }
+
+    ////////USB Serial Controllers - End/////////////
+
+
+
+    ////alert/////
+
+    private void showSensorReqAlert(final String device){
+
+        String _deviceName="Body Temperature Monitor";
+        String _Msg="Doctor requested you to use ";
+
+
+        if(device.equals("pulse"))
+        {
+            _deviceName="Pulse Sensor";
+        }
+
+        final String _deviceNameFinal=_deviceName;
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                DoctorDiagnoseActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle("Doctor Requested a sensor reading");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(_Msg+_deviceName+". Connect the sensor and press OK. If you don't want to use the sensor, press Cancel.")
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+//                        String deviceName="Body Temperature Monitor";
+//                        if(device.equals("pulse")) deviceName="Pulse Sensor";
+//                        Toast.makeText(DoctorDiagnoseActivity.this,"Requested the reading from "+deviceName, Toast.LENGTH_SHORT).show();
+
+                          textView_SensorReadingTitle.setText("Reading From "+_deviceNameFinal);
+                          textView_SensorReading.setText("---");
+                          currentReadingDevice=device;
+                          onClickStart(device);
+
+                    }
+                })
+                .setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String deviceName="Body Temperature Monitor";
+                        if(device.equals("pulse")) deviceName="Pulse Sensor";
+                        sendCancelSensorReqToDoc(device);
+                        Toast.makeText(DoctorDiagnoseActivity.this,"Cancelled using the "+deviceName, Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+
+
 
 
 }

@@ -1,6 +1,9 @@
 package com.example.senura.healthxstream;
 
 import android.content.Intent;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
+import com.felhr.usbserial.UsbSerialDevice;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -31,6 +35,7 @@ import java.util.Calendar;
 
 public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements MqttCallback {
 
+    //Mqtt Var
     public static MqttConnection mConnectionTemp=null;
     private MqttConnection mConnection=null;
     public static MqttAndroidClient clientTemp = null;
@@ -174,7 +179,7 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
         String passingPayload = payload;
 
-        String passingTopic = "healthxtream/send/";//+client.getClientId();
+        String passingTopic = "healthxtream/send/";
 
         boolean isPublished =mConnection.publishMessage(passingPayload, passingTopic);
 
