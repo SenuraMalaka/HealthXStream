@@ -294,6 +294,26 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     }
 
 
+    private void sendSensorReadingToDoc(String sensor, String reading){
+
+        String tempVal="null";
+        String pulseVal="null";
+
+        if(sensor.equals("temp")){
+            tempVal=reading;
+        }else{
+            pulseVal=reading;
+        }
+
+        String passingPayload = "{\"reason\":\"pMsg\", \"pid\":\""+clientID+"\", \"did\":\""+did+"\", \"temp\":\""+tempVal+"\"," +
+                " \"pulse\":\""+pulseVal+"\", \"msg\":\"null\"}";
+
+        String passingTopic = "healthxtream/doctor/"+did;
+
+        mConnection.publishMessage(passingPayload, passingTopic);
+    }
+
+
 
     private void disconnectClient()
     {
@@ -324,10 +344,6 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     public void onStop() {
         super.onStop();
 
-        if(!isRetainMqttState) {
-            passDisconnectMessage();
-            disconnectClient();
-        }
     }
 
 
@@ -468,9 +484,11 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
         if(tempCount<30 && tempCount>22 && currentReadingDevice.equals("temp")){
             //sendMsgToDoc wit read count
+            sendSensorReadingToDoc(currentReadingDevice,String.valueOf(tempCount));
             messageTemp=String.valueOf(tempCount)+" C'";
         }else if(tempCount<30 && tempCount>23 && currentReadingDevice.equals("pulse")){
             //sendMsgToDoc wit read count
+            sendSensorReadingToDoc(currentReadingDevice,String.valueOf(tempCount));
             messageTemp=String.valueOf(tempCount)+" BPM";
         }
 
@@ -488,6 +506,12 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if(!isRetainMqttState) {
+            passDisconnectMessage();
+            disconnectClient();
+        }
+
         serialPort.close();
         unregisterReceiver(broadcastReceiver);
 

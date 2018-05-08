@@ -48,6 +48,11 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
     EditText editText_MsgTyped=null;
     TextView textView_messageBx=null;
 
+    //sensorReading
+    TextView textView_SensorReadingTitle=null;
+    TextView textView_SensorReading=null;
+    LinearLayout linearLayout_SensorReadingBox=null;
+
 
     private boolean isRetainMqttState=false;
 
@@ -90,6 +95,14 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
         textView_messageBx = (TextView) findViewById(R.id.textView_PD_Messages);
         editText_MsgTyped = (EditText) findViewById(R.id.editText_PD_MessageTyped);
         button_SendMsg = (Button) findViewById(R.id.button_PD_SendMessage);
+
+        //For Device Readings
+        textView_SensorReadingTitle=(TextView) findViewById(R.id.textView_PD_DeviceReadTitle);
+        textView_SensorReading=(TextView) findViewById(R.id.textView_PD_Temp);
+        linearLayout_SensorReadingBox=(LinearLayout) findViewById(R.id.linearLayout_PD_DeviceMeter);
+
+        linearLayout_SensorReadingBox.setVisibility(View.GONE);
+
 
         button_EndSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,14 +316,41 @@ public class PatientDiagnoseActivity extends AppCompatActivity implements MqttCa
             }else if(_temp.equals("cancelled")){
                 makeSensorReqButtonVisible(true, "temp");//show button
             }else if(!_pulse.equals("null")){
-                addTextToMsgBox("Patient Pulse-> "+_msg);
+                addSensorReadingToTextBox("pulse", jsonResponse);
             }else if(!_temp.equals("null")){
-                addTextToMsgBox("Patient body temp-> "+_msg);
+                addSensorReadingToTextBox("temp", jsonResponse);
             }else{
                 //payload format is wrong //could be null
             }
 
         }
+
+    }
+
+
+    private void addSensorReadingToTextBox(String device, String res){
+        //{"reason":"pMsg", "pid":"patient123", "did":"doctor123", "temp":"1", "pulse":"null", "msg":"null"}
+
+        String _reading=JsonAccess.getJsonInsideObj(res,device);
+
+        String message="",title="";
+        String devicename="Temperature Monitor";
+        String tempSymbol="C'";
+
+
+        if(device.equals("pulse")){
+            devicename="Pulse Sensor";
+            tempSymbol="BPM";
+        }
+
+
+        linearLayout_SensorReadingBox.setVisibility(View.VISIBLE);
+
+        title="Reading from "+devicename;
+        textView_SensorReadingTitle.setText(title);
+
+        message=_reading+" "+tempSymbol;
+        textView_SensorReading.setText(message);
 
     }
 

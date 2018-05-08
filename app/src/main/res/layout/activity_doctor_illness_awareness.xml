@@ -49,6 +49,7 @@
             android:ems="10"
             android:hint="Type Here"
             android:inputType="textMultiLine"
+            android:singleLine="true"
             android:textSize="24sp" />
 
         <Button
