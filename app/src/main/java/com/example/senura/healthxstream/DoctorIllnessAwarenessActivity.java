@@ -1,6 +1,7 @@
 package com.example.senura.healthxstream;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
@@ -69,6 +70,7 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_illness_awareness);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         Intent intent = getIntent();
         did = intent.getStringExtra("did");

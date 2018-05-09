@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
@@ -78,6 +79,8 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
         setContentView(R.layout.activity_doctor_diagnose);
 
         Intent intent = getIntent();
@@ -512,7 +515,9 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
             disconnectClient();
         }
 
+        if(serialPort!=null)
         serialPort.close();
+
         unregisterReceiver(broadcastReceiver);
 
     }

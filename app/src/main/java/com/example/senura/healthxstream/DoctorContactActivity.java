@@ -1,6 +1,7 @@
 package com.example.senura.healthxstream;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_contact);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
 
 
@@ -50,6 +52,8 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         client=clientTemp;
         setClientListenToThisAct();
         setRes();
+        Toast.makeText(DoctorContactActivity.this,"clientID -> "+clientID, Toast.LENGTH_SHORT).show();
+
     }
 
 

@@ -2,6 +2,7 @@ package com.example.senura.healthxstream;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -65,12 +66,15 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     ArrayList<String> availableDidList=null;
     JSONArray docListjArray = null;
 
+    private boolean isRetainMqttState=false;
+
     private String patientName="Sen Ma";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_doctors);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         // Get reference of widgets from XML layout
         lv = (ListView) findViewById(R.id.ListView_MyDocs);
@@ -436,6 +440,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         DoctorContactActivity.clientTemp=client;//setMqttclient
         DoctorContactActivity.mConnectionTemp=mConnection;//setMqttConnection
         MyDoctorsActivity.this.startActivity(myIntent);
+        isRetainMqttState=true;
         finish();
     }
 
@@ -472,7 +477,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(!isRetainMqttState) {
             disconnectClient();
+        }
     }
 
 

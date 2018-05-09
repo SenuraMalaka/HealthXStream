@@ -2,6 +2,7 @@ package com.example.senura.healthxstream.DoctorsAct;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +61,8 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     //Buttons
     Button button_Search=null;
+    Button button_GoBack=null;
+
 
 
     private String patientID=null;
@@ -74,6 +77,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_waiting_area);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         doctorID="345";//should get the docID from the login
         setButtons();
@@ -103,16 +107,23 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     private void hideSearchTextArea(boolean state){
         LinearLayout lL_Search;
+        LinearLayout lL_BeforeSearchTextArea;
         lL_Search = (LinearLayout) findViewById(R.id.linearLayout_DWA_SearchingTextArea);
+        lL_BeforeSearchTextArea = (LinearLayout) findViewById(R.id.linearLayout_DWA_BeforeSearchTextArea);
 
-        if(state)
-        lL_Search.setVisibility(View.GONE);
-        else lL_Search.setVisibility(View.VISIBLE);
+        if(state) {
+            lL_Search.setVisibility(View.GONE);
+            lL_BeforeSearchTextArea.setVisibility(View.VISIBLE);
+        }
+        else {
+            lL_BeforeSearchTextArea.setVisibility(View.GONE);
+            lL_Search.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setButtons(){
 
-        //BodyTemp
+        //Search Patients
         button_Search = (Button) findViewById(R.id.button_DWA_Search);
         button_Search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +131,16 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
                 connectMqttClient();//subscribe to topic
                 hideSearchTextArea(false);
                 button_Search.setVisibility(View.GONE);
+            }
+        });
+
+        //GoBack
+        button_GoBack = (Button) findViewById(R.id.button_DWA_GoBack);
+        button_GoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DoctorWaitingAreaActivity.this, LoginActivity.class));
+                finish();
             }
         });
 

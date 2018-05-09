@@ -41,6 +41,38 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout_DWA_BeforeSearchTextArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/textView_DWA_BeforeTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text='Click "Search" button'
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView_DWA_BeforeSecond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="to see the doctor list"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout_DWA_SearchingTextArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

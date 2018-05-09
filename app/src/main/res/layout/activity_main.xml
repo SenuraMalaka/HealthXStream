@@ -1,121 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.senura.healthxstream.MyDoctorsActivity">
-
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_gravity="center"
     tools:context="com.example.senura.healthxstream.MyDoctorsActivity">
 
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        tools:context="com.example.senura.healthxstream.MyDoctorsActivity">
+
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/imageButton_MM_MD"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    app:srcCompat="@mipmap/doctor_logo" />
+
+                <TextView
+                    android:id="@+id/textView_MM_MD"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="My Doctors"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/imageButton_MM_BT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/thermometer_logo" />
+
+                <TextView
+                    android:id="@+id/textView_MM_BT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Body Temperature"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/imageButton_MM_HB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/cardiogram_logo" />
+
+                <TextView
+                    android:id="@+id/textView_MM_HB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HeartBeat"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imageButton_MM_MD"
+                android:id="@+id/imageButton_MM_FM"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                app:srcCompat="@mipmap/doctor_logo" />
+                app:srcCompat="@mipmap/family_logo" />
 
             <TextView
-                android:id="@+id/textView_MM_MD"
+                android:id="@+id/textView_MM_FM"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Doctors"
+                android:text="Family Members"
                 android:textAlignment="center" />
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/imageButton_MM_BT"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/thermometer_logo" />
-
-            <TextView
-                android:id="@+id/textView_MM_BT"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Body Temperature"
-                android:textAlignment="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/imageButton_MM_HB"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/cardiogram_logo" />
-
-            <TextView
-                android:id="@+id/textView_MM_HB"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="HeartBeat"
-                android:textAlignment="center" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/imageButton_MM_FM"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            app:srcCompat="@mipmap/family_logo" />
-
-        <TextView
-            android:id="@+id/textView_MM_FM"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Family Members"
-            android:textAlignment="center" />
     </LinearLayout>
 </LinearLayout>
-</ScrollView>
