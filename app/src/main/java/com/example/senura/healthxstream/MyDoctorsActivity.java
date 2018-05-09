@@ -175,7 +175,10 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 //MyDoctorsActivity.this.startActivity(myIntent);
                 //finish();
 
+
+                if(doctors_list.get(position).toLowerCase().contains("available"))
                 showBookDoctorAlert(docName,did);
+                else Toast.makeText(MyDoctorsActivity.this,"Selected Doctor is not available right now", Toast.LENGTH_SHORT).show();
 
             }
         });

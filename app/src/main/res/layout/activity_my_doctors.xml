@@ -53,7 +53,7 @@
             android:id="@+id/textView_checkToSeeTheDocs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="check to get a lsit of doctors"
+            android:text="Check to get a list of doctors. If the doctor is available, it will indicate after the doctor's name."
             android:textAlignment="center" />
 
         <ScrollView
