@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +49,49 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         mConnection=mConnectionTemp;
         client=clientTemp;
         setClientListenToThisAct();
+        setRes();
     }
 
 
     private void setClientListenToThisAct(){
         client.setCallback(DoctorContactActivity.this);
+    }
+
+
+    private void setRes(){
+        TextView textView_docID;
+        TextView textView_docNAme;
+        Button button_CancelAppointment;
+
+        textView_docID = (TextView) findViewById(R.id.textView_DC_waitingDocID);
+        textView_docNAme = (TextView) findViewById(R.id.textView_DC_waitingDocName);
+        button_CancelAppointment = (Button) findViewById(R.id.button_DC_CancelAp);
+
+        textView_docID.setText("Docotor ID - "+did);
+        textView_docNAme.setText("Doctor Name - "+docName);
+
+        button_CancelAppointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passDisconnectMessage();
+                finish();
+            }
+        });
+
+    }
+
+
+
+    public void passDisconnectMessage() {
+
+        if(did!=null) {
+            String passingPayload = "{\"reason\":\"pStopped\",\"pid\":\"" + clientID + "\"}";
+
+            String passingTopic = "healthxtream/doctor/"+did;
+
+            mConnection.publishMessage(passingPayload, passingTopic);
+        }
+
     }
 
 
@@ -111,20 +151,6 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         }
     }
 
-
-
-//this hould be deleted
-//    private void goToDoctorDiagnoseAct(String docName, String did){
-//        //go to another act
-//        Intent myIntent = new Intent(DoctorContactActivity.this, DoctorDiagnoseActivity.class);
-//        myIntent.putExtra("did", did); //Optional parameters
-//        myIntent.putExtra("docName", docName); //Optional parameters
-//        myIntent.putExtra("clientID", clientID); //Optional parameters
-//        DoctorDiagnoseActivity.clientTemp=client;//setMqttclient
-//        DoctorDiagnoseActivity.mConnectionTemp=mConnection;//setMqttConnection
-//        DoctorContactActivity.this.startActivity(myIntent);
-//        finish();
-//    }
 
     private void goToIllnessAwarenessAct(String docName, String did){
         //go to another act

@@ -100,7 +100,7 @@
                 android:text="Check" />
 
             <Button
-                android:id="@+id/button_call"
+                android:id="@+id/button_MD_GoBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

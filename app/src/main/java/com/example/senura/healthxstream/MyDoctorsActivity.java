@@ -88,6 +88,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         // DataBind ListView with items from ArrayAdapter
         lv.setAdapter(arrayAdapter);
 
+
         Intent intent = getIntent();
         String value = intent.getStringExtra("key");
 
@@ -104,9 +105,12 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     private void setButtons(){
         Button button_sentText;
+        Button button_GoBack;
 
         //mqtt
         button_sentText = (Button) findViewById(R.id.button_sendText);
+
+        button_GoBack = (Button) findViewById(R.id.button_MD_GoBack);
 
         button_sentText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +130,18 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 TextView textView_checkToSeeDocs = (TextView) findViewById(R.id.textView_checkToSeeTheDocs);
                 textView_checkToSeeDocs.setVisibility(View.GONE);
 
+
+            }
+        });
+
+
+
+        button_GoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //back to main menu
+                finish();
 
             }
         });
@@ -165,15 +181,6 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                     }
                 }
 
-                // When clicked, show a toast with the TextView text or do whatever you need.
-                //Toast.makeText(MyDoctorsActivity.this,"postion: "+position+" Long: "+id+" value is "+arrayAdapter.getItem(position)+" did ="+did+" DocName="+docName, Toast.LENGTH_SHORT).show();
-
-                //go to another act
-                //Intent myIntent = new Intent(MyDoctorsActivity.this, DoctorContactActivity.class);
-                //myIntent.putExtra("did", did); //Optional parameters
-                //myIntent.putExtra("docName", docName); //Optional parameters
-                //MyDoctorsActivity.this.startActivity(myIntent);
-                //finish();
 
 
                 if(doctors_list.get(position).toLowerCase().contains("available"))
@@ -326,6 +333,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     }
 
     private void docListReq(String jsonRes){
+
+        arrayAdapter.clear();//flush the view
+
          //doctors_list.add(JsonAccess.getJsonInsideObj(jsonRes,"docList"));
          String jsonArrayDocResult=JsonAccess.getJsonInsideObj(jsonRes,"docList");
 
@@ -455,6 +465,14 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 Log.e("MyDocA", "Client Disconnect -error " + e.toString());
             }
         }
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+            disconnectClient();
     }
 
 
