@@ -43,13 +43,18 @@ import java.util.List;
 
 public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback {
 
-
-    private MqttConnection mConnection = new MqttConnection();
+    //mqtt Variables
+    public static MqttConnection mConnectionTemp=null;
+    private MqttConnection mConnection=null;
+    public static MqttAndroidClient clientTemp = null;
     private MqttAndroidClient client = null;
+
+    private String clientID=null;
+
     private boolean isPublished = false;
     public String SourceID;
     public String jsonResponse = null;
-    String clientID=uniqueIDgenerator.getUUID();
+
     String docLst=null;
 
 
@@ -76,6 +81,17 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         setContentView(R.layout.activity_my_doctors);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
+
+
+        Intent intent = getIntent();
+        clientID = intent.getStringExtra("clientID");
+
+        mConnection=mConnectionTemp;
+        client=clientTemp;
+        setClientListenToThisAct();
+
+
+
         // Get reference of widgets from XML layout
         lv = (ListView) findViewById(R.id.ListView_MyDocs);
 
@@ -93,14 +109,16 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
         lv.setAdapter(arrayAdapter);
 
 
-        Intent intent = getIntent();
-        String value = intent.getStringExtra("key");
 
 
-        connectMqttClient();
+        //connectMqttClient();
         setButtons();
 
 
+    }
+
+    private void setClientListenToThisAct(){
+        client.setCallback(MyDoctorsActivity.this);
     }
 
 
@@ -127,6 +145,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 passDocListReq();
 
                 //a loop with did should go here //pName should assign somehow
+
+
                 passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"345\", \"pName\":\"Sen Ma\"}");
 
 

@@ -44,12 +44,16 @@ import java.util.List;
 public class DoctorWaitingAreaActivity extends AppCompatActivity implements MqttCallback {
 
     //MQTT Vars
-    private MqttConnection mConnection = new MqttConnection();
+    public static MqttConnection mConnectionTemp=null;
+    private MqttConnection mConnection=null;
+    public static MqttAndroidClient clientTemp = null;
     private MqttAndroidClient client = null;
+
     private boolean isPublished = false;
     public String SourceID;
     public String jsonResponse = null;
     String doctorID=null;
+    String docName=null;
 
     //ListView Vars
     private ListView lv=null;
@@ -79,7 +83,18 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         setContentView(R.layout.activity_doctor_waiting_area);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
-        doctorID="345";//should get the docID from the login
+
+
+        Intent intent = getIntent();
+        doctorID = intent.getStringExtra("did");
+        docName = intent.getStringExtra("docName");
+
+        mConnection=mConnectionTemp;
+        client=clientTemp;
+        setClientListenToThisAct();
+
+
+        //doctorID="345";//should get the docID from the login
         setButtons();
 
         // Get reference of widgets from XML layout
@@ -104,6 +119,10 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     }
 
+    private void setClientListenToThisAct(){
+        client.setCallback(DoctorWaitingAreaActivity.this);
+    }
+
 
     private void hideSearchTextArea(boolean state){
         LinearLayout lL_Search;
@@ -125,6 +144,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
         //Search Patients
         button_Search = (Button) findViewById(R.id.button_DWA_Search);
+        button_Search.setVisibility(View.GONE);
         button_Search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

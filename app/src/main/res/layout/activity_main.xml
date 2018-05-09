@@ -44,8 +44,9 @@
                     android:id="@+id/textView_MM_MD"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="My Doctors"
-                    android:textAlignment="center" />
+                    android:text="Doctors"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -73,7 +74,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Body Temperature"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -93,7 +95,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="HeartBeat"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -107,16 +110,17 @@
             <ImageButton
                 android:id="@+id/imageButton_MM_FM"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:background="@android:color/white"
-                app:srcCompat="@mipmap/family_logo" />
+                app:srcCompat="@mipmap/locked_logo" />
 
             <TextView
                 android:id="@+id/textView_MM_FM"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Family Members"
-                android:textAlignment="center" />
+                android:text="DoctorLogin"
+                android:textAlignment="center"
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

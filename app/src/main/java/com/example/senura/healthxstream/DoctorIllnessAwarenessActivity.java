@@ -281,7 +281,6 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
         super.onStop();
 
         if(!isRetainMqttState) {
-            stopRepeatingTask();
             passDisconnectMessage();
         }
     }

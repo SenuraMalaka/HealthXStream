@@ -11,10 +11,14 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
+import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     private boolean isPublished = false;
     public String SourceID;
     public String jsonResponse = null;
+    String clientID= uniqueIDgenerator.getUUID();
+
 
 
     @Override
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         //email added delgahadeniya.dissanayake@students.plymouth.ac.uk
 
        setButtons();
+       connectMqttClient();
 
 
     }
@@ -53,22 +60,14 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
 
-    public void passPayload() {
+    public void passPayload(String payload) {
 
-        String android_serial = android.os.Build.SERIAL;
+        String passingPayload =payload;
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-        String dateAndTime = df.format(Calendar.getInstance().getTime());
-
-        String passingPayload = "sample test25";
-
-        String passingTopic = "terminal/test25/"+client.getClientId();
+        String passingTopic = "healthxtream/send/";
         isPublished=false;
 
         isPublished = mConnection.publishMessage(passingPayload, passingTopic);
-
-        if (isPublished)
-            Toast.makeText(MainActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
 
         Log.d("TagpassedPayload", passingPayload);
 
@@ -89,8 +88,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
     }
 
     private void connectMqttClient() {
-        SourceID="test25";
-        client = mConnection.connect(MainActivity.this, this, "terminal/" + SourceID + "/", true);
+        client = mConnection.connect(MainActivity.this, this, "healthxtream/patient/"+clientID, false);
         client.setCallback(MainActivity.this);
     }
 
@@ -102,16 +100,6 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-        this.jsonResponse = message.toString();
-
-        //Log.d("TagMessageArrived", jsonResponse);
-
-
-        Log.d("TagMessageArrived", jsonResponse);
-
-        Toast.makeText(MainActivity.this, "response : "+jsonResponse, Toast.LENGTH_LONG).show();
-
 
 
     }
@@ -137,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
     private void setButtons(){
         ImageButton button_HB;
-        ImageButton button_FM;
+        ImageButton button_DoctorLogin;
         ImageButton button_MD;
         ImageButton button_BT;
 
@@ -161,9 +149,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             @Override
             public void onClick(View v) {
 
-                Intent myIntent = new Intent(MainActivity.this, MyDoctorsActivity.class);
-                myIntent.putExtra("key", "Achala Dissanayake"); //Optional parameters
-                MainActivity.this.startActivity(myIntent);
+                goToDoctorsAct();
 
             }
         });
@@ -171,15 +157,15 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
 
 
-        //FamilyMems
-        button_FM = (ImageButton) findViewById(R.id.imageButton_MM_FM);
+        //DocLogin
+        button_DoctorLogin = (ImageButton) findViewById(R.id.imageButton_MM_FM);
 
-        button_FM.setOnClickListener(new View.OnClickListener() {
+        button_DoctorLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(MainActivity.this, FamilyMembersActivity.class));
-                passPayload();
-
+                disconnectClient();
+                goToLoginAct();
+                finish();
             }
         });
 
@@ -191,10 +177,65 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, HeartBeatActivity.class));
-
             }
         });
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+
+    private void disconnectClient()
+    {
+        if(client!=null) {
+            try {
+                IMqttToken disconToken = client.disconnect();
+                disconToken.setActionCallback(new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        // we are now successfully disconnected
+                        Log.d("DocIll", "Client Successfully Disconnected");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken,
+                                          Throwable exception) {
+                        // something went wrong, but probably we are disconnected anyway
+                        Log.w("DocIll", "Client is not properly disconnected");
+                    }
+                });
+            } catch (MqttException e) {
+                Log.e("DocIll", "Client Disconnect -error " + e.toString());
+            }
+        }
+    }
+
+
+
+
+    private void goToDoctorsAct(){
+        //go to another act
+        Intent myIntent = new Intent(MainActivity.this, MyDoctorsActivity.class);
+        myIntent.putExtra("clientID", clientID); //Optional parameters
+        MyDoctorsActivity.clientTemp=client;//setMqttclient
+        MyDoctorsActivity.mConnectionTemp=mConnection;//setMqttConnection
+        MainActivity.this.startActivity(myIntent);
+        finish();
+    }
+
+
+    private void goToLoginAct(){
+        //go to another act
+        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+        MainActivity.this.startActivity(myIntent);
+
+    }
+
+
+
 
 
 }
