@@ -43,10 +43,8 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
 
         //email added delgahadeniya.dissanayake@students.plymouth.ac.uk
 
-        //startActivity(new Intent(MainActivity.this, BodyTemperatureActivity.class));
        setButtons();
 
-        //connectMqttClient();
 
     }
 

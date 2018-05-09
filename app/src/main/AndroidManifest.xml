@@ -36,10 +36,13 @@
 
         <activity android:name=".DoctorContactActivity" />
         <activity android:name=".DoctorsAct.DoctorWaitingAreaActivity" />
-        <activity android:name=".DoctorDiagnoseActivity" />
+        <activity android:name=".DoctorDiagnoseActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".DoctorIllnessAwarenessActivity" />
         <activity android:name=".DoctorsAct.DocNeedIllnessActivity" />
-        <activity android:name=".DoctorsAct.PatientDiagnoseActivity"></activity>
+        <activity android:name=".DoctorsAct.PatientDiagnoseActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

@@ -85,7 +85,7 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
         //handlers
         mHandler = new Handler();
-        startRepeatingTask();
+        //startRepeatingTask();
     }
 
     private void setClientListenToThisAct(){
