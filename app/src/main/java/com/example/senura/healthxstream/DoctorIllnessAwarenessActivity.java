@@ -128,7 +128,9 @@ public class DoctorIllnessAwarenessActivity extends AppCompatActivity implements
 
     @Override
     public void connectionLost(Throwable cause) {
-
+        Intent myIntent = new Intent(DoctorIllnessAwarenessActivity.this, MainActivity.class);
+        DoctorIllnessAwarenessActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override

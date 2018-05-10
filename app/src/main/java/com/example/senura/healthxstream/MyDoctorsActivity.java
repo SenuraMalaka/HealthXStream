@@ -254,7 +254,9 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
     @Override
     public void connectionLost(Throwable cause) {
         Toast.makeText(MyDoctorsActivity.this,"Connection Lost due to unreliable network", Toast.LENGTH_SHORT).show();
-
+        Intent myIntent = new Intent(MyDoctorsActivity.this, MainActivity.class);
+        MyDoctorsActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override

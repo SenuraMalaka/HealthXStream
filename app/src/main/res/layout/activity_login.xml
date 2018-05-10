@@ -58,7 +58,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Doctor ID"
-                android:inputType="textPersonName" />
+                android:inputType="number" />
 
             <Button
                 android:id="@+id/button_L_DIDConnect"
@@ -95,7 +95,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="E-Mail"
-                    android:inputType="textPersonName" />
+                    android:inputType="textWebEmailAddress" />
             </LinearLayout>
 
             <LinearLayout
@@ -110,7 +110,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="Passcode"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPassword" />
 
             </LinearLayout>
         </LinearLayout>

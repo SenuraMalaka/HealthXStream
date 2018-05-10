@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.senura.healthxstream.DoctorDiagnoseActivity;
 import com.example.senura.healthxstream.LoginActivity;
+import com.example.senura.healthxstream.MainActivity;
 import com.example.senura.healthxstream.R;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
@@ -76,7 +78,9 @@ public class DocNeedIllnessActivity extends AppCompatActivity implements MqttCal
 
     @Override
     public void connectionLost(Throwable cause) {
-
+        Intent myIntent = new Intent(DocNeedIllnessActivity.this, LoginActivity.class);
+        DocNeedIllnessActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override

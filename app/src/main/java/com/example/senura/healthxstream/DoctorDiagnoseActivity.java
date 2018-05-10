@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.felhr.usbserial.UsbSerialDevice;
@@ -117,7 +118,9 @@ public class DoctorDiagnoseActivity extends AppCompatActivity implements MqttCal
 
     @Override
     public void connectionLost(Throwable cause) {
-
+        Intent myIntent = new Intent(DoctorDiagnoseActivity.this, MainActivity.class);
+        DoctorDiagnoseActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override

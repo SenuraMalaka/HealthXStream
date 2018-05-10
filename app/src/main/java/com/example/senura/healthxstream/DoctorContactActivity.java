@@ -71,7 +71,7 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
         textView_docNAme = (TextView) findViewById(R.id.textView_DC_waitingDocName);
         button_CancelAppointment = (Button) findViewById(R.id.button_DC_CancelAp);
 
-        textView_docID.setText("Docotor ID - "+did);
+        textView_docID.setText("Doctor ID - "+did);
         textView_docNAme.setText("Doctor Name - "+docName);
 
         button_CancelAppointment.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +101,9 @@ public class DoctorContactActivity extends AppCompatActivity implements MqttCall
 
     @Override
     public void connectionLost(Throwable cause) {
-
+        Intent myIntent = new Intent(DoctorContactActivity.this, MainActivity.class);
+        DoctorContactActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override

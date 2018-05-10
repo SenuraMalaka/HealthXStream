@@ -193,7 +193,9 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
     @Override
     public void connectionLost(Throwable cause) {
-
+        Intent myIntent = new Intent(DoctorWaitingAreaActivity.this, LoginActivity.class);
+        DoctorWaitingAreaActivity.this.startActivity(myIntent);
+        finish();
     }
 
     @Override
@@ -310,7 +312,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
 
                         dialog.cancel();
                         //reload the page
-                        startActivity(new Intent(DoctorWaitingAreaActivity.this, DoctorWaitingAreaActivity.class));
+                        startActivity(new Intent(DoctorWaitingAreaActivity.this, MainActivity.class));
                         finish();
                     }
                 });
