@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
         ImageButton button_HB;
         ImageButton button_DoctorLogin;
         ImageButton button_MD;
+        ImageButton button_HX_Logo;
         ImageButton button_BT;
 
 
@@ -138,6 +139,17 @@ public class MainActivity extends AppCompatActivity implements MqttCallback {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, BodyTemperatureActivity.class));
+            }
+        });
+
+
+        //Button_HXLogo
+        button_HX_Logo = (ImageButton) findViewById(R.id.imageButton_MM_Logo);
+
+        button_HX_Logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"HealthXStream V1.0", Toast.LENGTH_SHORT).show();
             }
         });
 

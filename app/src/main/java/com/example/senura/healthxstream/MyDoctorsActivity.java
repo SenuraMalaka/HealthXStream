@@ -231,9 +231,6 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
         isPublished = mConnection.publishMessage(passingPayload, passingTopic);
 
-        if (isPublished)
-            Toast.makeText(MyDoctorsActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
-
         Log.d("TagpassedPayload", passingPayload);
 
         return isPublished;
@@ -256,7 +253,8 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     @Override
     public void connectionLost(Throwable cause) {
-        //connection has been lost
+        Toast.makeText(MyDoctorsActivity.this,"Connection Lost due to unreliable network", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -285,7 +283,7 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-
+            Toast.makeText(MyDoctorsActivity.this,"Message Published", Toast.LENGTH_SHORT).show();
     }
 
 

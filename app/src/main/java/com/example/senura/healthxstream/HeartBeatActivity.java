@@ -211,7 +211,10 @@ public class HeartBeatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        serialPort.close();
+
+        if(serialPort!=null) {
+            serialPort.close();
+        }
         unregisterReceiver(broadcastReceiver);
 
     }

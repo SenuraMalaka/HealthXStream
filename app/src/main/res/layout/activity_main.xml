@@ -7,8 +7,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:orientation="vertical"
     tools:context="com.example.senura.healthxstream.MyDoctorsActivity">
 
+
+    <ImageButton
+        android:id="@+id/imageButton_MM_Logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/holo_red_dark"
+        app:srcCompat="@mipmap/hx_just_logo" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +32,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="30dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
@@ -35,8 +44,9 @@
 
                 <ImageButton
                     android:id="@+id/imageButton_MM_MD"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:background="@android:color/white"
                     app:srcCompat="@mipmap/doctor_logo" />
 
@@ -65,6 +75,7 @@
 
                 <ImageButton
                     android:id="@+id/imageButton_MM_BT"
+                    style="@android:style/Widget.ImageButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:srcCompat="@mipmap/thermometer_logo" />
@@ -86,6 +97,7 @@
 
                 <ImageButton
                     android:id="@+id/imageButton_MM_HB"
+                    style="@android:style/Widget.ImageButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:srcCompat="@mipmap/cardiogram_logo" />
@@ -109,9 +121,9 @@
 
             <ImageButton
                 android:id="@+id/imageButton_MM_FM"
+                style="@android:style/Widget.ImageButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@android:color/white"
                 app:srcCompat="@mipmap/locked_logo" />
 
             <TextView

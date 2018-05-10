@@ -335,7 +335,7 @@ public class DoctorWaitingAreaActivity extends AppCompatActivity implements Mqtt
         super.onResume();
         arrayAdapter.clear();
         patients_list=new ArrayList<String>();
-        button_Search.setVisibility(View.VISIBLE);
+        //button_Search.setVisibility(View.VISIBLE);
         hideSearchTextArea(true);
     }
 

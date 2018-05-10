@@ -239,8 +239,12 @@ public class BodyTemperatureActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        serialPort.close();
-        unregisterReceiver(broadcastReceiver);
+
+        if(serialPort!=null) {
+            serialPort.close();
+        }
+            unregisterReceiver(broadcastReceiver);
+
 
     }
 
