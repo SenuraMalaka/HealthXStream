@@ -139,7 +139,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:lineSpacingExtra="10sp"
-                    android:text="Search" />
+                    android:text="Search"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/button_DWA_GoBack"

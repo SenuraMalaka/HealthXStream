@@ -45,8 +45,8 @@ public class BodyTemperatureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_body_temperature);
-        setButtonUSBOpen();
-        setButtonUSBClose();
+        //setButtonUSBOpen();
+        //setButtonUSBClose();
 
         textView_Temp = (TextView) findViewById(R.id.textView_BT_Temp);
 
@@ -196,7 +196,7 @@ public class BodyTemperatureActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(!message.equals(""))
-                textView_Temp.setText(message);
+                textView_Temp.setText(message+" C'");
             }
         });
 
