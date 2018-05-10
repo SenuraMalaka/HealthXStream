@@ -49,8 +49,31 @@
                 app:srcCompat="@mipmap/doctor_logo" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linearLayout_MD_PatientNameBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editText_MD_PatientName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Type Your Name Here"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/button_MD_PatientNameGrab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OK" />
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/textView_checkToSeeTheDocs"
+            android:id="@+id/textView_MD_checkToSeeTheDocs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Check to get a list of doctors. If the doctor is available, it will indicate after the doctor's name."

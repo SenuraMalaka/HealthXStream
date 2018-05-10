@@ -9,10 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,13 +129,23 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
 
     private void setButtons(){
-        Button button_sentText;
+        final Button button_sentText;
         Button button_GoBack;
+        final TextView textView_CheckToSeeDocs;
+        Button button_NameTextGrab;
+        final LinearLayout linearLayout_NameBox;
+        final EditText editText_Name;
 
         //mqtt
         button_sentText = (Button) findViewById(R.id.button_sendText);
+        button_sentText.setVisibility(View.GONE);
 
         button_GoBack = (Button) findViewById(R.id.button_MD_GoBack);
+        button_NameTextGrab = (Button) findViewById(R.id.button_MD_PatientNameGrab);
+        editText_Name = (EditText) findViewById(R.id.editText_MD_PatientName);
+        linearLayout_NameBox = (LinearLayout) findViewById(R.id.linearLayout_MD_PatientNameBox);
+        textView_CheckToSeeDocs = (TextView) findViewById(R.id.textView_MD_checkToSeeTheDocs);
+        textView_CheckToSeeDocs.setVisibility(View.GONE);
 
         button_sentText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,12 +160,11 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
                 //a loop with did should go here //pName should assign somehow
 
 
-                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"345\", \"pName\":\"Sen Ma\"}");
+                passPayload("{\"reason\":\"isDocAvailable\", \"pid\":\""+clientID+"\", \"did\":\"345\", \"pName\":\""+patientName+"\"}");
 
 
                 //hide the text
-                TextView textView_checkToSeeDocs = (TextView) findViewById(R.id.textView_checkToSeeTheDocs);
-                textView_checkToSeeDocs.setVisibility(View.GONE);
+                textView_CheckToSeeDocs.setVisibility(View.GONE);
 
 
             }
@@ -170,6 +182,27 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
             }
         });
 
+
+        button_NameTextGrab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //get name and save
+                String typedName=editText_Name.getText().toString();
+                if(!typedName.equals("")){
+                    patientName=typedName;
+                    button_sentText.setVisibility(View.VISIBLE);
+                    linearLayout_NameBox.setVisibility(View.GONE);
+                    textView_CheckToSeeDocs.setVisibility(View.VISIBLE);
+
+
+
+                }else{
+                    Toast.makeText(MyDoctorsActivity.this,"Type your name in the Name Field first", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
