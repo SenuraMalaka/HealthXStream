@@ -42,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@mipmap/doctor_logo" />
+                app:srcCompat="@mipmap/doc_waiting_logo" />
         </LinearLayout>
 
         <LinearLayout

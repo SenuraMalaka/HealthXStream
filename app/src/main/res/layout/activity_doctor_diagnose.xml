@@ -17,6 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
@@ -49,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@mipmap/family_logo" />
+                    app:srcCompat="@mipmap/diagnose_logo" />
             </LinearLayout>
         </LinearLayout>
 
@@ -82,6 +83,20 @@
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="30sp"
                 tools:text="----" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_DD_EndSession"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="End Session" />
         </LinearLayout>
 
         <ScrollView
@@ -121,7 +136,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:layout_weight="0.7"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <Button
                         android:id="@+id/button_DD_PulseMonitor"
@@ -138,20 +154,6 @@
                         android:layout_weight="0.35"
                         android:text="Scan Temperature" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/button_DD_EndSession"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="End Session" />
                 </LinearLayout>
 
             </LinearLayout>

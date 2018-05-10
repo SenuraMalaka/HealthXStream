@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
     LinearLayout linearLayout_EmailAndPassword;
     TextView textView_DID;
     EditText editText_DID;
+    private Button button_lg_Login;
 
 
 
@@ -77,8 +78,9 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
 
 
     private void setRes(){
-        final Button button_lg_Login;
+
         button_lg_Login = (Button) findViewById(R.id.button_LG_Login);
+        button_lg_Login.setVisibility(View.GONE);
 
         final EditText etEmail;
         etEmail = (EditText) findViewById(R.id.editText_LG_EM);
@@ -105,6 +107,7 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
                 linearLayout_DID.setVisibility(View.GONE);
                 linearLayout_EmailAndPassword.setVisibility(View.VISIBLE);
                 textView_DID.setText("Doctor ID = "+did);
+                button_lg_Login.setVisibility(View.VISIBLE);
             }
         });
 
@@ -226,7 +229,10 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
         docName = JsonAccess.getJsonInsideObj(res, "docName");
         goToDoctorWaitingAct();
         }else{
-            //invalid credentials
+            Toast.makeText(LoginActivity.this,"Invalid Credentials. Please try again", Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
+            LoginActivity.this.startActivity(myIntent);
+            finish();
         }
 
     }
@@ -255,7 +261,7 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
     public void onBackPressed() {
         new AlertDialog.Builder(this)
                 .setTitle("Really Exit?")
-                .setMessage("Are you sure you want to exit?")
+                .setMessage("Do you want to goto Main Menu?")
                 .setNegativeButton(android.R.string.no, null)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 

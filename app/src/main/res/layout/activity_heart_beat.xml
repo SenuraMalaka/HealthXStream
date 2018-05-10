@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -25,7 +25,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -41,19 +41,31 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="30sp" />
 
+        <TextView
+            android:id="@+id/textView_BT_Detail2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="Connect the Pulse rate sensor, the readings will appear below"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
         <Button
             android:id="@+id/button_HB_Scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Scan" />
+            android:text="Scan"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/button_HB_Stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Stop" />
+            android:text="Stop"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +73,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="50dp">
 
         <TextView
             android:id="@+id/textView_HB_BPM"
@@ -69,12 +82,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="56 BPM (Good)"
+            android:text="---"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@android:color/holo_red_dark"
-            android:textSize="30sp"
-            tools:text="56 BPM (Good)" />
+            android:textSize="36sp"
+            tools:text="---" />
     </LinearLayout>
 
 </LinearLayout>

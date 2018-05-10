@@ -34,10 +34,10 @@
 
         <ImageView
             android:id="@+id/imageViewPatient"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@mipmap/family_logo" />
+            app:srcCompat="@mipmap/findpatient_logo2" />
     </LinearLayout>
 
     <LinearLayout
