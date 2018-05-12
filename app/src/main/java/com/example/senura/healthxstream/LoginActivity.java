@@ -28,6 +28,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
@@ -149,13 +150,33 @@ public class LoginActivity extends AppCompatActivity implements MqttCallback {
     public void passAuthenticationMessage(String email, String password) {
 
         if(did!=null) {
-            String passingPayload = "{\"reason\":\"authentication\",\"did\":\"" + did + "\", \"email\":\""+email+"\", \"password\":\""+password+"\"}";
+
+            String hashedKey;
+            try {
+                byte[] bytesOfMessage = AES.EncryptThis("1SENURA8901234$$789&23456789123W", password);
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] bytesOfDigest = md.digest(bytesOfMessage);
+                hashedKey = convertByteToHex(bytesOfDigest);
+            }catch (Exception e){
+                hashedKey="";
+            }
+            String passingPayload = "{\"reason\":\"authentication\",\"did\":\"" + did + "\", \"email\":\""+email+"\", \"password\":\""+hashedKey+"\"}";
 
             String passingTopic = "healthxtream/send/";
 
             mConnection.publishMessage(passingPayload, passingTopic);
         }
 
+    }
+
+    private static String convertByteToHex(byte[] byteData) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 
 

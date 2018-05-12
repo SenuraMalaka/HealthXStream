@@ -23,10 +23,11 @@ public class AES {
 
 
 
-    public static String EncryptThis(String key, String message) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidParameterSpecException {
+    public static byte[] EncryptThis(String key, String message) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidParameterSpecException {
         SecretKey secret = generateKey(key);
 
-        return new String(encryptMsg(message, secret), "Cp1251");
+        return encryptMsg(message, secret);
+        //return new String(encryptMsg(message, secret), "UTF-8");//Cp1251
     }
 
       //decrypt - decryptMsg(byte[] toDecrypt, secret); << not implemented yet - Sen

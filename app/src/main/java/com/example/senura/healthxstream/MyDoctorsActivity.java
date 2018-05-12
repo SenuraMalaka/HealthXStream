@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.senura.healthxstream.DoctorsAct.DoctorWaitingAreaActivity;
+import com.example.senura.healthxstream.EncryptAlgorithm.AES;
 import com.example.senura.healthxstream.mqttConnectionPackage.JsonAccess;
 import com.example.senura.healthxstream.mqttConnectionPackage.MqttConnection;
 import com.example.senura.healthxstream.mqttConnectionPackage.uniqueIDgenerator;
@@ -36,6 +37,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +50,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback {
 
@@ -273,8 +284,14 @@ public class MyDoctorsActivity extends AppCompatActivity implements MqttCallback
 
     //get the doc list
     public void passDocListReq() {
-        passPayload("{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}");
+        try {
+            passPayload("{\"reason\":\"docListReq\", \"pid\":\""+clientID+"\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
 
 
 
