@@ -186,7 +186,7 @@ public class HeartBeatActivity extends AppCompatActivity {
 
         String messageTemp="";
 
-        if(tempCount<70 && tempCount>50){
+        if(tempCount<77 && tempCount>45){
             messageTemp=String.valueOf(tempCount);
         }
 
